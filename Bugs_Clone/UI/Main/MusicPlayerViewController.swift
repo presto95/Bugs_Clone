@@ -103,15 +103,15 @@ private extension MusicPlayerViewController {
     func registerDependencies() {
         DIContainer.shared.register(self, as: NavigationInteractable.self)
         DIContainer.shared.register(self, as: MusicPlayerRootUIInteractable.self)
-        DIContainer.shared.register(self, as: AudioInteractable.self)
+        DIContainer.shared.register(self, as: MusicInteractable.self)
     }
 }
 
-// MARK: - AudioInteractable
+// MARK: - MusicInteractable
 
-extension MusicPlayerViewController: AudioInteractable {
-    var audioPlayer: AudioPlayerProtocol? {
-        return viewModel.audioPlayer
+extension MusicPlayerViewController: MusicInteractable {
+    var musicPlayer: MusicPlayerProtocol? {
+        return viewModel.musicPlayer
     }
 
     var seekbar: SeekbarProtocol? {
@@ -132,20 +132,20 @@ extension MusicPlayerViewController: AudioInteractable {
         seekbar?.endTime = endTime
     }
 
-    func updateAudioCurrentTime(_ currentTime: TimeInterval) {
-        audioPlayer?.currentTime = currentTime
+    func updateMusicCurrentTime(_ currentTime: TimeInterval) {
+        musicPlayer?.currentTime = currentTime
     }
 
     @discardableResult
-    func playAudio() -> Bool {
-        guard let audioPlayer = audioPlayer else { return false }
-        return audioPlayer.play()
+    func playMusic() -> Bool {
+        guard let musicPlayer = musicPlayer else { return false }
+        return musicPlayer.play()
     }
 
     @discardableResult
-    func pauseAudio() -> Bool {
-        guard let audioPlayer = audioPlayer else { return false }
-        return audioPlayer.pause()
+    func pauseMusic() -> Bool {
+        guard let musicPlayer = musicPlayer else { return false }
+        return musicPlayer.pause()
     }
 }
 

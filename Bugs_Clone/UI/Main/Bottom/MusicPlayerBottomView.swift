@@ -21,8 +21,8 @@ final class MusicPlayerBottomView: UIView {
         return DIContainer.shared.resolve(NavigationInteractable.self)
     }
 
-    private var audioInteractor: AudioInteractable? {
-        return DIContainer.shared.resolve(AudioInteractable.self)
+    private var musicInteractor: MusicInteractable? {
+        return DIContainer.shared.resolve(MusicInteractable.self)
     }
 
     private var viewModel: MusicPlayerBottomViewModel
@@ -124,8 +124,8 @@ private extension MusicPlayerBottomView {
     func bindSubviews() {
         seekbar.$trackingDidEndWithUpdatedTime
             .sink { [weak self] currentTime in
-                self?.audioInteractor?.updateAudioCurrentTime(currentTime)
-                self?.audioInteractor?.updateCurrentTime(currentTime)
+                self?.musicInteractor?.updateMusicCurrentTime(currentTime)
+                self?.musicInteractor?.updateCurrentTime(currentTime)
             }
             .store(in: &cancellables)
 
@@ -148,7 +148,7 @@ private extension MusicPlayerBottomView {
                 .compactMap { $0 }
                 .filter { $0 == .play }
                 .sink { [weak self] _ in
-                    let result = self?.audioInteractor?.playAudio()
+                    let result = self?.musicInteractor?.playMusic()
                     if result == false {
                         self?.musicControlView.playPauseControl.rollbackStatus()
                         self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
@@ -160,7 +160,7 @@ private extension MusicPlayerBottomView {
                 .compactMap { $0 }
                 .filter { $0 == .pause }
                 .sink { [weak self] _ in
-                    let result = self?.audioInteractor?.pauseAudio()
+                    let result = self?.musicInteractor?.pauseMusic()
                     if result == false {
                         self?.musicControlView.playPauseControl.rollbackStatus()
                         self?.navigationInteractor?.presentAlert(withMessage: "RETRY")

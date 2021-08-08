@@ -201,34 +201,38 @@ private extension Seekbar {
         case .began, .changed:
             isTracking = true
 
-            currentTimeBar.snp.updateConstraints { make in
-                make.height.equalTo(trackingStatusHeight)
+            do {
+                currentTimeBar.snp.updateConstraints { make in
+                    make.height.equalTo(trackingStatusHeight)
+                }
+
+                UIView.animate(withDuration: 0.2) {
+                    self.layoutIfNeeded()
+                }
             }
 
-            let animator = UIViewPropertyAnimator(duration: 0.2, curve: .linear)
-            animator.addAnimations {
-                self.layoutIfNeeded()
-            }
-            animator.startAnimation()
-
-            currentTimeBar.snp.updateConstraints { make in
-                make.trailing.equalToSuperview().offset(-Const.width + interactionProgress)
+            do {
+                currentTimeBar.snp.updateConstraints { make in
+                    make.trailing.equalToSuperview().offset(-Const.width + interactionProgress)
+                }
             }
         case .ended:
             isTracking = false
 
-            currentTimeBar.snp.updateConstraints { make in
-                make.height.equalTo(normalStatusHeight)
+            do {
+                currentTimeBar.snp.updateConstraints { make in
+                    make.height.equalTo(normalStatusHeight)
+                }
+
+                UIView.animate(withDuration: 0.2) {
+                    self.layoutIfNeeded()
+                }
             }
 
-            let animator = UIViewPropertyAnimator(duration: 0.2, curve: .linear)
-            animator.addAnimations {
-                self.layoutIfNeeded()
-            }
-            animator.startAnimation()
-
-            currentTimeBar.snp.updateConstraints { make in
-                make.trailing.equalToSuperview().offset(-Const.width + interactionProgress)
+            do {
+                currentTimeBar.snp.updateConstraints { make in
+                    make.trailing.equalToSuperview().offset(-Const.width + interactionProgress)
+                }
             }
 
             let progress = TimeInterval(interactionProgress)

@@ -1,5 +1,5 @@
 //
-//  AudioPlayer.swift
+//  MusicPlayer.swift
 //  Bugs_Clone
 //
 //  Created by Presto on 2021/07/04.
@@ -7,7 +7,7 @@
 
 import AVFoundation
 
-protocol AudioPlayerProtocol: AnyObject {
+protocol MusicPlayerProtocol: AnyObject {
     var isPlaying: Bool { get }
     var currentTime: TimeInterval { get set }
     var endTime: TimeInterval { get }
@@ -21,12 +21,11 @@ protocol AudioPlayerProtocol: AnyObject {
     var decodeErrorDidOccurPublisher: Published<Error?>.Publisher { get }
 }
 
-final class AudioPlayer: NSObject {
+final class MusicPlayer: NSObject {
     @Published private(set) var didFinishPlaying: Bool?
     @Published private(set) var decodeErrorDidOccur: Error?
     @Published private(set) var currentTimeDidUpdate: TimeInterval?
 
-    weak var seekbar: Seekbar?
     private var player: AVAudioPlayer
     private var timer: Timer?
 
@@ -61,7 +60,7 @@ final class AudioPlayer: NSObject {
 
 // MARK: - Interface
 
-extension AudioPlayer: AudioPlayerProtocol {
+extension MusicPlayer: MusicPlayerProtocol {
     var currentTimeDidUpdatePublisher: Published<TimeInterval?>.Publisher {
         return $currentTimeDidUpdate
     }
@@ -139,7 +138,7 @@ extension AudioPlayer: AudioPlayerProtocol {
 
 // MARK: - Built-in Timer
 
-private extension AudioPlayer {
+private extension MusicPlayer {
     @objc func timerDidTick(_ timer: Timer) {
         currentTimeDidUpdate = currentTime
     }
@@ -155,7 +154,7 @@ private extension AudioPlayer {
 
 // MARK: - AVAudioPlayerDelegate
 
-extension AudioPlayer: AVAudioPlayerDelegate {
+extension MusicPlayer: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         didFinishPlaying = flag
         player.stop()

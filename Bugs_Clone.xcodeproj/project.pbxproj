@@ -28,7 +28,7 @@
 		192103A6268F75AB0063AA78 /* UIView+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103A5268F75AB0063AA78 /* UIView+.swift */; };
 		192103AA268F75E00063AA78 /* MusicPlayerLyricViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103A9268F75E00063AA78 /* MusicPlayerLyricViewModel.swift */; };
 		192103AD269189E80063AA78 /* MusicAPIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103AC269189E80063AA78 /* MusicAPIError.swift */; };
-		192103B026918C890063AA78 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103AF26918C890063AA78 /* AudioPlayer.swift */; };
+		192103B026918C890063AA78 /* MusicPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103AF26918C890063AA78 /* MusicPlayer.swift */; };
 		192103B326918CFC0063AA78 /* Seekbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103B226918CFC0063AA78 /* Seekbar.swift */; };
 		192103B526918D600063AA78 /* MusicControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103B426918D600063AA78 /* MusicControlView.swift */; };
 		192103B726918E6F0063AA78 /* RepeatControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 192103B626918E6F0063AA78 /* RepeatControl.swift */; };
@@ -45,7 +45,7 @@
 		196B9FA826BFCB5800CBA07B /* Lyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 196B9FA726BFCB5800CBA07B /* Lyrics.swift */; };
 		19FB08BF26BFF2DB00683501 /* MusicPlayerRootUIInteractable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FB08BE26BFF2DB00683501 /* MusicPlayerRootUIInteractable.swift */; };
 		19FB08C126BFF34600683501 /* MusicPlayerDisplayingInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FB08C026BFF34600683501 /* MusicPlayerDisplayingInfo.swift */; };
-		19FB08C326BFF80400683501 /* AudioInteractable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FB08C226BFF80400683501 /* AudioInteractable.swift */; };
+		19FB08C326BFF80400683501 /* MusicInteractable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FB08C226BFF80400683501 /* MusicInteractable.swift */; };
 		19FB08C626C0044200683501 /* MusicPlayerLyricCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19FB08C526C0044200683501 /* MusicPlayerLyricCell.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,7 +71,7 @@
 		192103A5268F75AB0063AA78 /* UIView+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+.swift"; sourceTree = "<group>"; };
 		192103A9268F75E00063AA78 /* MusicPlayerLyricViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerLyricViewModel.swift; sourceTree = "<group>"; };
 		192103AC269189E80063AA78 /* MusicAPIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicAPIError.swift; sourceTree = "<group>"; };
-		192103AF26918C890063AA78 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		192103AF26918C890063AA78 /* MusicPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayer.swift; sourceTree = "<group>"; };
 		192103B226918CFC0063AA78 /* Seekbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Seekbar.swift; sourceTree = "<group>"; };
 		192103B426918D600063AA78 /* MusicControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicControlView.swift; sourceTree = "<group>"; };
 		192103B626918E6F0063AA78 /* RepeatControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepeatControl.swift; sourceTree = "<group>"; };
@@ -88,7 +88,7 @@
 		196B9FA726BFCB5800CBA07B /* Lyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lyrics.swift; sourceTree = "<group>"; };
 		19FB08BE26BFF2DB00683501 /* MusicPlayerRootUIInteractable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerRootUIInteractable.swift; sourceTree = "<group>"; };
 		19FB08C026BFF34600683501 /* MusicPlayerDisplayingInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerDisplayingInfo.swift; sourceTree = "<group>"; };
-		19FB08C226BFF80400683501 /* AudioInteractable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioInteractable.swift; sourceTree = "<group>"; };
+		19FB08C226BFF80400683501 /* MusicInteractable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicInteractable.swift; sourceTree = "<group>"; };
 		19FB08C526C0044200683501 /* MusicPlayerLyricCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicPlayerLyricCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -209,7 +209,7 @@
 		192103AE26918C750063AA78 /* Audio */ = {
 			isa = PBXGroup;
 			children = (
-				192103AF26918C890063AA78 /* AudioPlayer.swift */,
+				192103AF26918C890063AA78 /* MusicPlayer.swift */,
 			);
 			path = Audio;
 			sourceTree = "<group>";
@@ -245,7 +245,7 @@
 			children = (
 				196B9FA426BF9AB400CBA07B /* NavigationInteractable.swift */,
 				19FB08BE26BFF2DB00683501 /* MusicPlayerRootUIInteractable.swift */,
-				19FB08C226BFF80400683501 /* AudioInteractable.swift */,
+				19FB08C226BFF80400683501 /* MusicInteractable.swift */,
 			);
 			path = Interactable;
 			sourceTree = "<group>";
@@ -353,7 +353,7 @@
 				1920877E26ABE47B006F8B11 /* MusicPlayerBottomView.swift in Sources */,
 				1920877626ABDED3006F8B11 /* ViewArrayBuilder.swift in Sources */,
 				192103BF269190880063AA78 /* SubsequentControl.swift in Sources */,
-				192103B026918C890063AA78 /* AudioPlayer.swift in Sources */,
+				192103B026918C890063AA78 /* MusicPlayer.swift in Sources */,
 				192103BB26918E930063AA78 /* MusicControl.swift in Sources */,
 				192103B926918E8B0063AA78 /* PrecedentControl.swift in Sources */,
 				192103C52691A2110063AA78 /* MusicAPI.swift in Sources */,
@@ -366,7 +366,7 @@
 				196B9FA526BF9AB400CBA07B /* NavigationInteractable.swift in Sources */,
 				19210399268F22180063AA78 /* MusicPlayerViewController.swift in Sources */,
 				192103AD269189E80063AA78 /* MusicAPIError.swift in Sources */,
-				19FB08C326BFF80400683501 /* AudioInteractable.swift in Sources */,
+				19FB08C326BFF80400683501 /* MusicInteractable.swift in Sources */,
 				1921039B268F22220063AA78 /* MusicPlayerLyricView.swift in Sources */,
 				1910B08A26AD5AE6003AF35F /* Formatter.swift in Sources */,
 				196B9FA326BF97AE00CBA07B /* UIAlertController+.swift in Sources */,

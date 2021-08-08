@@ -12,7 +12,7 @@ final class MusicPlayerViewModel: ObservableObject {
     @Published private(set) var albumCoverImageData: Data?
     @Published private(set) var musicData: Data?
 
-    private(set) var audioPlayer: AudioPlayerProtocol?
+    private(set) var musicPlayer: MusicPlayerProtocol?
 
     var topViewModel: MusicPlayerTopViewModel?
     var bottomViewModel: MusicPlayerBottomViewModel?
@@ -21,8 +21,8 @@ final class MusicPlayerViewModel: ObservableObject {
     private let musicDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let musicRequestResultSubject = CurrentValueSubject<Result<Music, Error>?, Never>(nil)
     
-    private var audioInteractor: AudioInteractable? {
-        return DIContainer.shared.resolve(AudioInteractable.self)
+    private var musicInteractor: MusicInteractable? {
+        return DIContainer.shared.resolve(MusicInteractable.self)
     }
 
     private var cancellables = Set<AnyCancellable>()
@@ -38,7 +38,7 @@ final class MusicPlayerViewModel: ObservableObject {
 
         musicDataSubject
             .compactMap { $0 }
-            .tryMap { try AudioPlayer(data: $0) }
+            .tryMap { try MusicPlayer(data: $0) }
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case let .failure(error):
@@ -46,15 +46,11 @@ final class MusicPlayerViewModel: ObservableObject {
                 case .finished:
                     break
                 }
-            }, receiveValue: { [weak self] audioPlayer in
-//                DIContainer.shared.register(audioPlayer, as: AudioPlayerProtocol.self)
-                self?.audioPlayer = audioPlayer
+            }, receiveValue: { [weak self] musicPlayer in
+                self?.musicPlayer = musicPlayer
 
-                self?.audioInteractor?.updateEndTime(audioPlayer.endTime)
-                self?.bindAudioPlayer(audioPlayer)
-//                NotificationCenter.default.post(Notification(name: .audioPlayerDidInitialize,
-//                                                             object: self,
-//                                                             userInfo: ["audioPlayer": audioPlayer]))
+                self?.musicInteractor?.updateEndTime(musicPlayer.endTime)
+                self?.bindMusicPlayer(musicPlayer)
             })
             .store(in: &cancellables)
 
@@ -136,23 +132,23 @@ final class MusicPlayerViewModel: ObservableObject {
 }
 
 private extension MusicPlayerViewModel {
-    func bindAudioPlayer(_ audioPlayer: AudioPlayerProtocol) {
-        audioPlayer.currentTimeDidUpdatePublisher
+    func bindMusicPlayer(_ musicPlayer: MusicPlayerProtocol) {
+        musicPlayer.currentTimeDidUpdatePublisher
             .compactMap { $0 }
             .sink { [weak self] currentTime in
-                self?.audioInteractor?.updateCurrentTime(currentTime)
+                self?.musicInteractor?.updateCurrentTime(currentTime)
             }
             .store(in: &cancellables)
 
-        audioPlayer.didFinishPlayingPublisher
+        musicPlayer.didFinishPlayingPublisher
             .compactMap { $0 }
             .filter { $0 }
             .sink { [weak self] _ in
-                NotificationCenter.default.post(Notification(name: .audioPlayerDidEnd))
+                NotificationCenter.default.post(Notification(name: .musicPlayerDidEnd))
             }
             .store(in: &cancellables)
 
-        audioPlayer.decodeErrorDidOccurPublisher
+        musicPlayer.decodeErrorDidOccurPublisher
             .compactMap { $0 }
             .sink { [weak self] error in
                 DIContainer.shared.resolve(NavigationInteractable.self)?

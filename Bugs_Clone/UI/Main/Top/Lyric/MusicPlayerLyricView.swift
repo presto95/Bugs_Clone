@@ -17,8 +17,8 @@ final class MusicPlayerLyricView: UIView {
     private lazy var topGradientView = UIView()
     private lazy var bottomGradientView = UIView()
 
-    private var audioInteractor: AudioInteractable? {
-        return DIContainer.shared.resolve(AudioInteractable.self)
+    private var musicInteractor: MusicInteractable? {
+        return DIContainer.shared.resolve(MusicInteractable.self)
     }
 
     private var viewModel: MusicPlayerLyricViewModel
@@ -69,8 +69,8 @@ extension MusicPlayerLyricView: UITableViewDelegate {
         tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
 
         guard let lyricTime = viewModel.lyrics?.lyricTime(at: indexPath.row) else { return }
-        audioInteractor?.updateCurrentTime(lyricTime)
-        audioInteractor?.updateAudioCurrentTime(lyricTime)
+        musicInteractor?.updateCurrentTime(lyricTime)
+        musicInteractor?.updateMusicCurrentTime(lyricTime)
     }
 }
 
