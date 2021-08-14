@@ -11,10 +11,10 @@ protocol MusicPlayerProtocol: AnyObject {
     var isPlaying: Bool { get }
     var currentTime: TimeInterval { get set }
     var endTime: TimeInterval { get }
-    func play() -> Bool
-    func pause() -> Bool
-    func resume() -> Bool
-    func stop() -> Bool
+    @discardableResult func play() -> Bool
+    @discardableResult func pause() -> Bool
+    @discardableResult func resume() -> Bool
+    @discardableResult func stop() -> Bool
 
     var currentTimeDidUpdatePublisher: Published<TimeInterval?>.Publisher { get }
     var didFinishPlayingPublisher: Published<Bool?>.Publisher { get }
@@ -156,8 +156,13 @@ private extension MusicPlayer {
 
 extension MusicPlayer: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        player.pause()
+        player.currentTime = 0
+
+        timer?.invalidate()
+        timer = nil
+
         didFinishPlaying = flag
-        player.stop()
     }
 
     func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {

@@ -14,7 +14,7 @@ protocol SeekbarProtocol: AnyObject {
 }
 
 final class Seekbar: UIView, SeekbarProtocol {
-    @Published private(set) var trackingDidEndWithUpdatedTime: TimeInterval = 0
+    @Published private(set) var updatedTimeWithSeeking: TimeInterval = 0
 
     private lazy var entireTimeBar = UIView()
     private lazy var currentTimeBar = UIView()
@@ -116,7 +116,7 @@ private extension Seekbar {
         }
 
         entireTimeBar.do {
-            $0.backgroundColor = .lightGray
+            $0.backgroundColor = .systemGray
             $0.isUserInteractionEnabled = true
             $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(entireTimeBarDidTap(_:))))
             $0.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(entireTimeBarDidPan(_:))))
@@ -126,7 +126,7 @@ private extension Seekbar {
         }
 
         currentTimeBar.do {
-            $0.backgroundColor = .black
+            $0.backgroundColor = .label
             $0.isUserInteractionEnabled = true
             $0.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(currentTimeBarDidTap(_:))))
             $0.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(currentTimeBarDidPan(_:))))
@@ -135,7 +135,7 @@ private extension Seekbar {
             })
         }
 
-        addSubviews {
+        subviews {
             entireTimeBar
             currentTimeBar
         }
@@ -243,7 +243,7 @@ private extension Seekbar {
                     return progress * endTime / TimeInterval(Const.width)
                 }
             }()
-            trackingDidEndWithUpdatedTime = updatingTime
+            updatedTimeWithSeeking = updatingTime
         default:
             break
         }

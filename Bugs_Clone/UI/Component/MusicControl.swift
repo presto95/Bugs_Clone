@@ -8,6 +8,19 @@
 import UIKit
 
 protocol MusicControl {
-    associatedtype Status
-    func run()
+    func setNextStatus(animated: Bool)
+}
+
+extension MusicControl {
+    func runScaleAnimation(to view: UIView) {
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       options: [.autoreverse, .curveEaseInOut],
+                       animations: {
+                        view.transform = view.transform.scaledBy(x: 0.8, y: 0.8)
+                       },
+                       completion: { _ in
+                        view.transform = .identity
+                       })
+    }
 }

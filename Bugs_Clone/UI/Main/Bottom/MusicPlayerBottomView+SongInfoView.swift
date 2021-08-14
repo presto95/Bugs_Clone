@@ -55,20 +55,23 @@ extension MusicPlayerBottomView {
 private extension MusicPlayerBottomView.SongInfoView {
     func configureViews() {
         titleLabel.do {
+            $0.textColor = .label
             $0.font = .preferredFont(forTextStyle: .headline)
             $0.setContentHuggingPriority(.defaultLow + 1, for: .vertical)
         }
 
         albumLabel.do {
+            $0.textColor = .label
             $0.font = .preferredFont(forTextStyle: .footnote)
             $0.setContentHuggingPriority(.defaultLow + 1, for: .vertical)
         }
 
         artistLabel.do {
+            $0.textColor = .label
             $0.font = .preferredFont(forTextStyle: .footnote)
         }
 
-        addSubviews {
+        subviews {
             titleLabel
             albumLabel
             artistLabel

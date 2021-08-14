@@ -10,12 +10,11 @@ import Combine
 
 protocol LyricsViewProtocol: AnyObject {
     func selectLyricItem(before time: TimeInterval)
+    func unselectLyricItem()
 }
 
 final class MusicPlayerLyricView: UIView {
     private lazy var tableView = UITableView(frame: .zero, style: .plain)
-    private lazy var topGradientView = UIView()
-    private lazy var bottomGradientView = UIView()
 
     private var musicInteractor: MusicInteractable? {
         return DIContainer.shared.resolve(MusicInteractable.self)
@@ -42,12 +41,31 @@ final class MusicPlayerLyricView: UIView {
     }
 }
 
-extension MusicPlayerLyricView: LyricsViewProtocol {
-    func selectLyricItem(before time: TimeInterval) {
-        guard let index = viewModel.lyrics?.index(before: time) else { return }
-        tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
+// MARK: - Interface
+
+extension MusicPlayerLyricView {
+    func updateSelectedLyricAlignmentToCenterY() {
+        guard let selectedIndex = tableView.indexPathForSelectedRow?.row else { return }
+        tableView.selectRow(at: IndexPath(row: selectedIndex, section: 0), animated: false, scrollPosition: .middle)
     }
 }
+
+// MARK: - LyricsViewProtocol
+
+extension MusicPlayerLyricView: LyricsViewProtocol {
+    func selectLyricItem(before time: TimeInterval) {
+        guard let index = viewModel.lyrics?.index(before: time),
+              tableView.indexPathForSelectedRow?.row != index else { return }
+        tableView.selectRow(at: IndexPath(row: index, section: 0), animated: true, scrollPosition: .middle)
+    }
+
+    func unselectLyricItem() {
+        guard let selectedIndexPath = tableView.indexPathForSelectedRow else { return }
+        tableView.deselectRow(at: selectedIndexPath, animated: false)
+    }
+}
+
+// MARK: - UITableViewDataSource
 
 extension MusicPlayerLyricView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -64,15 +82,20 @@ extension MusicPlayerLyricView: UITableViewDataSource {
     }
 }
 
+// MARK: - UITableViewDelegate
+
 extension MusicPlayerLyricView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
-
         guard let lyricTime = viewModel.lyrics?.lyricTime(at: indexPath.row) else { return }
+
         musicInteractor?.updateCurrentTime(lyricTime)
         musicInteractor?.updateMusicCurrentTime(lyricTime)
+
+        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .middle)
     }
 }
+
+// MARK: - Private Method
 
 private extension MusicPlayerLyricView {
     func configureViews() {
@@ -86,45 +109,14 @@ private extension MusicPlayerLyricView {
             $0.estimatedRowHeight = UITableView.automaticDimension
         }
 
-        topGradientView.do {
-            $0.layer.addSublayer(CAGradientLayer().then {
-                $0.startPoint = CGPoint(x: 0.5, y: 0)
-                $0.endPoint = CGPoint(x: 0.5, y: 1)
-                $0.colors = [UIColor.white.cgColor, UIColor.clear.cgColor]
-                $0.locations = [0, 1]
-            })
-        }
-
-        bottomGradientView.do {
-            $0.layer.addSublayer(CAGradientLayer().then {
-                $0.startPoint = CGPoint(x: 0.5, y: 0)
-                $0.endPoint = CGPoint(x: 0.5, y: 1)
-                $0.colors = [UIColor.clear.cgColor, UIColor.white.cgColor]
-                $0.locations = [0, 1]
-            })
-        }
-
-        addSubviews {
+        subviews {
             tableView
         }
 
-        tableView.addSubviews {
-            topGradientView
-            bottomGradientView
-        }
-
         tableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
-        topGradientView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(16)
-        }
-
-        bottomGradientView.snp.makeConstraints { make in
-            make.bottom.leading.trailing.equalToSuperview()
-            make.height.equalTo(16)
+            make.top.equalToSuperview().offset(16)
+            make.bottom.equalToSuperview().offset(-16)
+            make.leading.trailing.equalToSuperview()
         }
     }
 

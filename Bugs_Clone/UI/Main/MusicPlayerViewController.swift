@@ -60,14 +60,12 @@ private extension MusicPlayerViewController {
             $0.contentMode = .scaleAspectFill
         }
 
-        view.addSubviews {
-            backgroundImageView
+        view.subviews {
+            backgroundImageView.subviews {
+                backgroundImageBlurView
+            }
             topView
             bottomView
-        }
-
-        backgroundImageView.addSubviews {
-            backgroundImageBlurView
         }
 
         backgroundImageBlurView.snp.makeConstraints { make in
@@ -122,6 +120,10 @@ extension MusicPlayerViewController: MusicInteractable {
         return topView.lyricView
     }
 
+    var musicControlView: MusicControlView? {
+        return bottomView.musicControlView
+    }
+
     func updateCurrentTime(_ currentTime: TimeInterval) {
         bottomView.updateCurrentTime(currentTime)
         seekbar?.currentTime = currentTime
@@ -134,6 +136,14 @@ extension MusicPlayerViewController: MusicInteractable {
 
     func updateMusicCurrentTime(_ currentTime: TimeInterval) {
         musicPlayer?.currentTime = currentTime
+    }
+
+    func reset() {
+        musicPlayer?.stop()
+        seekbar?.currentTime = 0
+        bottomView.updateCurrentTime(0)
+        musicControlView?.playPauseControl.setNextStatus(animated: false)
+        lyricsView?.unselectLyricItem()
     }
 
     @discardableResult

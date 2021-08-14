@@ -18,15 +18,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // MARK: Window
         window = UIWindow()
-        window?.tintColor = .black
+        window?.tintColor = .label
 
         // MARK: Root View Controller
         let viewModel = MusicPlayerViewModel()
         let viewController = MusicPlayerViewController(viewModel: viewModel)
         window?.rootViewController = viewController
-        viewController.view.layoutIfNeeded()
         window?.makeKeyAndVisible()
-        
+
+        viewController.view.layoutIfNeeded()
+
         return true
     }
 }

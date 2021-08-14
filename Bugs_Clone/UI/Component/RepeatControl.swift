@@ -7,29 +7,21 @@
 
 import UIKit
 
-final class RepeatControl: UIControl, MusicControl {
-    @Published private(set) var didTap: Status?
-
-    enum Status {
+final class RepeatControl: UIControl {
+    enum Status: String {
         case off
         case one
+    }
 
-        var image: UIImage? {
-            switch self {
-            case .off:
-                return UIImage(systemName: "repeat")
-            case .one:
-                return UIImage(systemName: "repeat.1")
-            }
+    @Published private(set) var tap: Void?
+    @Published var status: Status = .off {
+        didSet {
+            UserDefaults.standard.lastRepeatStatus = status
+            setNeedsLayout()
         }
     }
 
     private lazy var imageView = UIImageView()
-    private(set) var status: Status = .off {
-        didSet {
-            setNeedsLayout()
-        }
-    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -45,21 +37,21 @@ final class RepeatControl: UIControl, MusicControl {
         super.layoutSubviews()
         updateViews()
     }
-
-    func run() {
-        toggleStatus()
-        runScaleEffect()
-        didTap = status
-    }
 }
 
-private extension RepeatControl {
-    func toggleStatus() {
+// MARK: - MusicControl
+
+extension RepeatControl: MusicControl {
+    func setNextStatus(animated: Bool) {
         switch status {
         case .off:
-            status = .one
+            self.status = .one
         case .one:
-            status = .off
+            self.status = .off
+        }
+
+        if animated {
+            runScaleAnimation(to: imageView)
         }
     }
 }
@@ -68,11 +60,13 @@ private extension RepeatControl {
 
 private extension RepeatControl {
     func configureViews() {
+        addTarget(self, action: #selector(viewDidTap(_:)), for: .touchUpInside)
+
         imageView.do {
-            $0.image = status.image
+            $0.image = Const.image(status: status)
         }
 
-        addSubviews {
+        subviews {
             imageView
         }
 
@@ -82,14 +76,25 @@ private extension RepeatControl {
     }
 
     func updateViews() {
-        imageView.image = status.image
+        imageView.image = Const.image(status: status)
     }
 
-    func runScaleEffect() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: [.autoreverse, .curveEaseInOut], animations: {
-            self.imageView.transform = self.imageView.transform.scaledBy(x: 0.8, y: 0.8)
-        }, completion: { _ in
-            self.imageView.transform = .identity
-        })
+    @objc func viewDidTap(_ sender: UIControl) {
+        tap = ()
+    }
+}
+
+// MARK: - Const
+
+private extension RepeatControl {
+    enum Const {
+        static func image(status: Status) -> UIImage? {
+            switch status {
+            case .off:
+                return UIImage(systemName: "repeat")
+            case .one:
+                return UIImage(systemName: "repeat.1")
+            }
+        }
     }
 }

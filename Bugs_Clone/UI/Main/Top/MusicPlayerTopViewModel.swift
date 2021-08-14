@@ -38,7 +38,7 @@ final class MusicPlayerTopViewModel: ObservableObject {
         lyricViewModel?.setLyricRawString(lyrics)
     }
 
-    func toggleDisplayingInfo() {
+    func setNextDisplayingInfo() {
         switch displayingInfo {
         case .albumCover:
             displayingInfoSubject.send(.lyric)

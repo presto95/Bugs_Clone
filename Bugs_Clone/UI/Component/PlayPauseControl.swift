@@ -8,30 +8,20 @@
 import UIKit
 import Combine
 
-final class PlayPauseControl: UIControl, MusicControl {
-    @Published private(set) var didTap: Status?
-
-    enum Status {
+final class PlayPauseControl: UIControl {
+    enum Status: String {
         case play
         case pause
-
-        var image: UIImage? {
-            switch self {
-            case .play:
-                return UIImage(systemName: "pause")
-            case .pause:
-                return UIImage(systemName: "play")
-            }
-        }
     }
 
-    private lazy var imageView = UIImageView()
-    private(set) var status: Status = .pause {
+    @Published private(set) var tap: Void?
+    @Published var status: Status = .pause {
         didSet {
             setNeedsLayout()
         }
     }
-    private var previousStatus: Status?
+
+    private lazy var imageView = UIImageView()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,28 +37,36 @@ final class PlayPauseControl: UIControl, MusicControl {
         super.layoutSubviews()
         updateViews()
     }
+}
 
-    func run() {
-        toggleStatus()
-        runScaleEffect()
-        didTap = status
-    }
+// MARK: - MusicControl
 
-    func rollbackStatus() {
-        guard let previousStatus = previousStatus else { return }
+extension PlayPauseControl: MusicControl {
+    func setNextStatus(animated: Bool) {
+        switch status {
+        case .play:
+            self.status = .pause
+        case .pause:
+            self.status = .play
+        }
 
-        status = previousStatus
-        self.previousStatus = nil
+        if animated {
+            runScaleAnimation(to: imageView)
+        }
     }
 }
 
+// MARK: - UI
+
 private extension PlayPauseControl {
     func configureViews() {
+        addTarget(self, action: #selector(viewDidTap(_:)), for: .touchUpInside)
+
         imageView.do {
-            $0.image = status.image
+            $0.image = Const.image(status: status)
         }
 
-        addSubviews {
+        subviews {
             imageView
         }
 
@@ -78,25 +76,37 @@ private extension PlayPauseControl {
     }
 
     func updateViews() {
-        imageView.image = status.image
-    }
-
-    func toggleStatus() {
-        switch status {
-        case .play:
-            previousStatus = status
-            status = .pause
-        case .pause:
-            previousStatus = status
-            status = .play
-        }
+        imageView.image = Const.image(status: status)
     }
 
     func runScaleEffect() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: [.autoreverse, .curveEaseInOut], animations: {
-            self.imageView.transform = self.imageView.transform.scaledBy(x: 0.8, y: 0.8)
-        }, completion: { _ in
-            self.imageView.transform = .identity
-        })
+        UIView.animate(withDuration: 0.1,
+                       delay: 0,
+                       options: [.autoreverse, .curveEaseInOut],
+                       animations: {
+                        self.imageView.transform = self.imageView.transform.scaledBy(x: 0.8, y: 0.8)
+                       },
+                       completion: { _ in
+                        self.imageView.transform = .identity
+                       })
+    }
+
+    @objc func viewDidTap(_ sender: UIControl) {
+        tap = ()
+    }
+}
+
+// MARK: - Const
+
+private extension PlayPauseControl {
+    enum Const {
+        static func image(status: Status) -> UIImage? {
+            switch status {
+            case .play:
+                return UIImage(systemName: "pause")
+            case .pause:
+                return UIImage(systemName: "play")
+            }
+        }
     }
 }

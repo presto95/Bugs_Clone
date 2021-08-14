@@ -26,9 +26,9 @@ final class MusicPlayerLyricCell: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         if selected {
-            textLabel?.textColor = .black
+            textLabel?.textColor = .label
         } else {
-            textLabel?.textColor = .lightGray
+            textLabel?.textColor = .systemGray
         }
     }
 }

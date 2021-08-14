@@ -25,6 +25,10 @@ final class MusicPlayerViewModel: ObservableObject {
         return DIContainer.shared.resolve(MusicInteractable.self)
     }
 
+    private var navigationInteracotr: NavigationInteractable? {
+        return DIContainer.shared.resolve(NavigationInteractable.self)
+    }
+
     private var cancellables = Set<AnyCancellable>()
 
     init() {
@@ -144,15 +148,14 @@ private extension MusicPlayerViewModel {
             .compactMap { $0 }
             .filter { $0 }
             .sink { [weak self] _ in
-                NotificationCenter.default.post(Notification(name: .musicPlayerDidEnd))
+                self?.musicInteractor?.reset()
             }
             .store(in: &cancellables)
 
         musicPlayer.decodeErrorDidOccurPublisher
             .compactMap { $0 }
             .sink { [weak self] error in
-                DIContainer.shared.resolve(NavigationInteractable.self)?
-                    .presentAlert(withMessage: error.localizedDescription)
+                self?.navigationInteracotr?.presentAlert(withMessage: error.localizedDescription)
             }
             .store(in: &cancellables)
     }

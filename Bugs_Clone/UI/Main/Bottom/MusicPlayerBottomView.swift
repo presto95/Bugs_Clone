@@ -12,10 +12,10 @@ final class MusicPlayerBottomView: UIView {
     private(set) lazy var seekbar = Seekbar()
     private lazy var currentTimeLabel = UILabel()
     private lazy var endTimeLabel = UILabel()
-    private lazy var songInfoViewBackgroundView = UIView()
-    private lazy var musicControlViewBackgroundView = UIView()
+    private lazy var songInfoViewContainerView = UIView()
+    private lazy var musicControlViewContainerView = UIView()
     private lazy var songInfoView = SongInfoView()
-    private lazy var musicControlView = MusicControlView()
+    private(set) lazy var musicControlView = MusicControlView()
 
     private var navigationInteractor: NavigationInteractable? {
         return DIContainer.shared.resolve(NavigationInteractable.self)
@@ -52,12 +52,12 @@ extension MusicPlayerBottomView {
 private extension MusicPlayerBottomView {
     func configureViews() {
         currentTimeLabel.do {
-            $0.textColor = .lightGray
+            $0.textColor = .label
             $0.font = .preferredFont(forTextStyle: .footnote)
         }
 
         endTimeLabel.do {
-            $0.textColor = .lightGray
+            $0.textColor = .label
             $0.font = .preferredFont(forTextStyle: .footnote)
         }
 
@@ -65,20 +65,16 @@ private extension MusicPlayerBottomView {
             $0.setContentHuggingPriority(.defaultHigh, for: .vertical)
         }
 
-        addSubviews {
+        subviews {
             seekbar
             currentTimeLabel
             endTimeLabel
-            songInfoViewBackgroundView
-            musicControlViewBackgroundView
-        }
-
-        songInfoViewBackgroundView.addSubviews {
-            songInfoView
-        }
-
-        musicControlViewBackgroundView.addSubviews {
-            musicControlView
+            songInfoViewContainerView.subviews {
+                songInfoView
+            }
+            musicControlViewContainerView.subviews {
+                musicControlView
+            }
         }
 
         seekbar.snp.makeConstraints { make in
@@ -95,21 +91,24 @@ private extension MusicPlayerBottomView {
             make.trailing.equalToSuperview().offset(-16)
         }
 
-        songInfoViewBackgroundView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(48)
+        songInfoViewContainerView.snp.makeConstraints { make in
+            make.top.equalTo(currentTimeLabel.snp.bottom).offset(8)
             make.leading.trailing.equalToSuperview()
+            make.height.equalTo(musicControlViewContainerView)
         }
 
-        musicControlViewBackgroundView.snp.makeConstraints { make in
-            make.top.equalTo(songInfoViewBackgroundView.snp.bottom).offset(16)
+        musicControlViewContainerView.snp.makeConstraints { make in
+            make.top.equalTo(songInfoViewContainerView.snp.bottom)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-16)
+            make.bottom.equalToSuperview()
         }
 
         songInfoView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
+            make.centerY.equalToSuperview()
             make.leading.equalToSuperview().offset(16)
-            make.trailing.equalTo(-16)
+            make.trailing.equalToSuperview().offset(-16)
+            make.top.greaterThanOrEqualToSuperview()
+            make.bottom.lessThanOrEqualToSuperview()
         }
 
         musicControlView.snp.makeConstraints { make in
@@ -122,66 +121,67 @@ private extension MusicPlayerBottomView {
     }
 
     func bindSubviews() {
-        seekbar.$trackingDidEndWithUpdatedTime
+        seekbar.$updatedTimeWithSeeking
             .sink { [weak self] currentTime in
                 self?.musicInteractor?.updateMusicCurrentTime(currentTime)
                 self?.musicInteractor?.updateCurrentTime(currentTime)
             }
             .store(in: &cancellables)
 
-        musicControlView.do {
-            $0.$repeatControlDidTap
-                .compactMap { $0 }
-                .sink { _ in
-                    Logger.log("Repeat Control didTap")
-                }
-                .store(in: &cancellables)
+        musicControlView.repeatControl.$tap
+            .compactMap { $0 }
+            .sink { [weak self] _ in
+                self?.musicControlView.repeatControl.setNextStatus(animated: true)
+            }
+            .store(in: &cancellables)
 
-            $0.$precedentControlDidTap
-                .compactMap { $0 }
-                .sink { _ in
-                    Logger.log("Precedent Control didTap")
-                }
-                .store(in: &cancellables)
+        musicControlView.precedentControl.$tap
+            .compactMap { $0 }
+            .sink { [weak self] _ in
+                self?.musicControlView.precedentControl.setNextStatus(animated: true)
+            }
+            .store(in: &cancellables)
 
-            $0.$playPauseControlDidTap
+        musicControlView.playPauseControl.do {
+            $0.$tap
                 .compactMap { $0 }
-                .filter { $0 == .play }
                 .sink { [weak self] _ in
-                    let result = self?.musicInteractor?.playMusic()
-                    if result == false {
-                        self?.musicControlView.playPauseControl.rollbackStatus()
-                        self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
+                    let status = self?.musicControlView.playPauseControl.status
+                    switch status {
+                    case .play:
+                        let result = self?.musicInteractor?.pauseMusic()
+                        if result == true {
+                            self?.musicControlView.playPauseControl.setNextStatus(animated: true)
+                        } else {
+                            self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
+                        }
+                    case .pause:
+                        let result = self?.musicInteractor?.playMusic()
+                        if result == true {
+                            self?.musicControlView.playPauseControl.setNextStatus(animated: true)
+                        } else {
+                            self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
+                        }
+                    case .none:
+                        break
                     }
-                }
-                .store(in: &cancellables)
-
-            $0.$playPauseControlDidTap
-                .compactMap { $0 }
-                .filter { $0 == .pause }
-                .sink { [weak self] _ in
-                    let result = self?.musicInteractor?.pauseMusic()
-                    if result == false {
-                        self?.musicControlView.playPauseControl.rollbackStatus()
-                        self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
-                    }
-                }
-                .store(in: &cancellables)
-
-            $0.$subsequentControlDidTap
-                .compactMap { $0 }
-                .sink { _ in
-                    Logger.log("Subsequent Control didTap")
-                }
-                .store(in: &cancellables)
-
-            $0.$shuffleControlDidTap
-                .compactMap { $0 }
-                .sink { _ in
-                    Logger.log("Shuffle Control didTap")
                 }
                 .store(in: &cancellables)
         }
+
+        musicControlView.subsequentControl.$tap
+            .compactMap { $0 }
+            .sink { [weak self] _ in
+                self?.musicControlView.subsequentControl.setNextStatus(animated: true)
+            }
+            .store(in: &cancellables)
+
+        musicControlView.shuffleControl.$tap
+            .compactMap { $0 }
+            .sink { [weak self] _ in
+                self?.musicControlView.shuffleControl.setNextStatus(animated: true)
+            }
+            .store(in: &cancellables)
     }
 
     func bindViewModel() {

@@ -33,6 +33,8 @@ final class MusicPlayerTopView: UIView {
     }
 }
 
+// MARK: - Private Method
+
 private extension MusicPlayerTopView {
     func configureViews() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(viewDidTap(_:)))
@@ -51,7 +53,7 @@ private extension MusicPlayerTopView {
             $0.alpha = 0
         }
 
-        addSubviews {
+        subviews {
             albumCoverImageView
             lyricView
         }
@@ -86,6 +88,7 @@ private extension MusicPlayerTopView {
             .filter { $0 == .lyric }
             .sink { [weak self] _ in
                 self?.musicPlayerRootUIInteractor?.adjustRootViews(by: .lyric)
+                self?.lyricView.updateSelectedLyricAlignmentToCenterY()
 
                 UIView.animate(withDuration: 0.2,
                                delay: 0,
@@ -105,13 +108,13 @@ private extension MusicPlayerTopView {
             .assign(to: \.image, on: albumCoverImageView)
             .store(in: &cancellables)
     }
-}
 
-private extension MusicPlayerTopView {
     @objc func viewDidTap(_ recognizer: UITapGestureRecognizer) {
-        viewModel.toggleDisplayingInfo()
+        viewModel.setNextDisplayingInfo()
     }
 }
+
+// MARK: - UIGestureRecognizerDelegate
 
 extension MusicPlayerTopView: UIGestureRecognizerDelegate {
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
