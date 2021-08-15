@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import SnapKit
+import MusicPlayerCommon
 import Walkman
 import Common
 
@@ -111,7 +112,7 @@ private extension MusicPlayerViewController {
 
 extension MusicPlayerViewController: MusicInteractable {
     var musicPlayer: MusicPlayerProtocol? {
-        return viewModel.walkman
+        return viewModel.musicPlayer
     }
 
     var seekbar: SeekbarProtocol? {
@@ -150,14 +151,14 @@ extension MusicPlayerViewController: MusicInteractable {
 
     @discardableResult
     func playMusic() -> Bool {
-        guard let walkman = musicPlayer else { return false }
-        return walkman.play()
+        guard let musicPlayer = musicPlayer else { return false }
+        return musicPlayer.play()
     }
 
     @discardableResult
     func pauseMusic() -> Bool {
-        guard let walkman = musicPlayer else { return false }
-        return walkman.pause()
+        guard let musicPlayer = musicPlayer else { return false }
+        return musicPlayer.pause()
     }
 }
 

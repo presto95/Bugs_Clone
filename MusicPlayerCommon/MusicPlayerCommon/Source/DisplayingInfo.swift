@@ -1,11 +1,11 @@
 //
-//  MusicPlayerDisplayingInfo.swift
-//  SwiftUIMusicPlayer
+//  DisplayingInfo.swift
+//  MusicPlayerCommon
 //
 //  Created by Presto on 2021/08/15.
 //
 
-enum DisplayingInfo {
+public enum DisplayingInfo {
     case albumCover
     case lyric
 }

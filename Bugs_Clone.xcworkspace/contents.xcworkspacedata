@@ -23,6 +23,13 @@
    </Group>
    <Group
       location = "container:"
+      name = "Domain">
+      <FileRef
+         location = "group:MusicPlayerCommon/MusicPlayerCommon.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
       name = "Shared">
       <FileRef
          location = "group:Walkman/Walkman.xcodeproj">

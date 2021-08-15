@@ -10,9 +10,9 @@ import SwiftUI
 struct MusicPlayerTopView: View {
     @ObservedObject private var viewModel: MusicPlayerTopViewModel
 
-    @Binding var displayingInfo: DisplayingInfo
+    @Binding var displayingInfo: MusicPlayerDisplayingInfo
 
-    init(viewModel: MusicPlayerTopViewModel, displayingInfo: Binding<DisplayingInfo>) {
+    init(viewModel: MusicPlayerTopViewModel, displayingInfo: Binding<MusicPlayerDisplayingInfo>) {
         self.viewModel = viewModel
         self._displayingInfo = displayingInfo
     }

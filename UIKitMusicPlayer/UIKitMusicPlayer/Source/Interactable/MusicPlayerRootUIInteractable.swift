@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MusicPlayerCommon
 
 protocol MusicPlayerRootUIInteractable: AnyObject {
     func adjustRootViews(by displayingInfo: DisplayingInfo)

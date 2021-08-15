@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import MusicPlayerCommon
 
 final class MusicPlayerTopViewModel: ObservableObject {
     @Published private(set) var displayingInfo: DisplayingInfo = .albumCover

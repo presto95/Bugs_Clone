@@ -190,7 +190,7 @@ private extension MusicPlayerBottomView {
             .assign(to: \.title, on: songInfoView)
             .store(in: &cancellables)
 
-        viewModel.$albumName
+        viewModel.$album
             .assign(to: \.album, on: songInfoView)
             .store(in: &cancellables)
 

@@ -1,8 +1,8 @@
 //
 //  MusicPlayerViewModel.swift
-//  UIKitMusicPlayer
+//  SwiftUIMusicPlayer
 //
-//  Created by Presto on 2021/07/03.
+//  Created by Presto on 2021/08/15.
 //
 
 import Combine
@@ -22,14 +22,6 @@ public final class MusicPlayerViewModel: ObservableObject {
     private let albumCoverImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let musicDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let musicRequestResultSubject = CurrentValueSubject<Result<Music, Error>?, Never>(nil)
-    
-    private var musicInteractor: MusicInteractable? {
-        return DIContainer.shared.resolve(MusicInteractable.self)
-    }
-
-    private var navigationInteracotr: NavigationInteractable? {
-        return DIContainer.shared.resolve(NavigationInteractable.self)
-    }
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -55,10 +47,8 @@ public final class MusicPlayerViewModel: ObservableObject {
             }, receiveValue: { [weak self] musicPlayer in
                 self?.musicPlayer = musicPlayer
 
-                self?.musicInteractor?.updateEndTime(musicPlayer.endTime)
-                self?.bindMusicPlayer(musicPlayer)
+
             })
-            .store(in: &cancellables)
 
         let sharedMusicRequestResult = musicRequestResultSubject
             .tryCompactMap { try $0?.get() }
@@ -86,7 +76,7 @@ public final class MusicPlayerViewModel: ObservableObject {
         sharedMusicRequestResult
             .map(\.file)
             .receive(on: DispatchQueue.global(qos: .utility))
-            .compactMap { URL(string: $0) }
+            .compactMap(URL.init)
             .tryMap { try Data(contentsOf: $0) }
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: { completion in
@@ -118,8 +108,6 @@ public final class MusicPlayerViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-
-    // MARK: Input
 
     func requestMusic() {
         API.musicPublisher()

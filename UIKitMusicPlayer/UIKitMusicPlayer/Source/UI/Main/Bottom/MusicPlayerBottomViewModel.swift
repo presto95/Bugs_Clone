@@ -10,13 +10,13 @@ import Common
 
 final class MusicPlayerBottomViewModel: ObservableObject {
     @Published private(set) var title: String?
-    @Published private(set) var albumName: String?
+    @Published private(set) var album: String?
     @Published private(set) var artist: String?
     @Published private(set) var currentTime: String?
     @Published private(set) var endTime: String?
 
     private let titleSubject = CurrentValueSubject<String?, Never>(nil)
-    private let albumNameSubject = CurrentValueSubject<String?, Never>(nil)
+    private let albumSubject = CurrentValueSubject<String?, Never>(nil)
     private let artistSubject = CurrentValueSubject<String?, Never>(nil)
     private let currentTimeSubject = CurrentValueSubject<TimeInterval?, Never>(nil)
     private let endTimeSubject = CurrentValueSubject<TimeInterval?, Never>(nil)
@@ -29,9 +29,9 @@ final class MusicPlayerBottomViewModel: ObservableObject {
             .assign(to: \.title, on: self)
             .store(in: &cancellables)
 
-        albumNameSubject
+        albumSubject
             .removeDuplicates()
-            .assign(to: \.albumName, on: self)
+            .assign(to: \.album, on: self)
             .store(in: &cancellables)
 
         artistSubject
@@ -56,9 +56,9 @@ final class MusicPlayerBottomViewModel: ObservableObject {
 
     // MARK: Input
 
-    func setData(title: String?, albumName: String?, artist: String?, endTime: TimeInterval) {
+    func setData(title: String?, album: String?, artist: String?, endTime: TimeInterval) {
         titleSubject.send(title)
-        albumNameSubject.send(albumName)
+        albumSubject.send(album)
         artistSubject.send(artist)
         endTimeSubject.send(endTime)
     }
