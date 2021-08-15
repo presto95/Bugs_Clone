@@ -6,16 +6,25 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MusicPlayerView: View {
+    @ObservedObject private var viewModel: MusicPlayerViewModel
+
+    init(viewModel: MusicPlayerViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         Text("Hello, world!")
             .padding()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+// MARK: - Preview
+
+struct MusicPlayerView_Previews: PreviewProvider {
     static var previews: some View {
-        MusicPlayerView()
+        MusicPlayerView(viewModel: MusicPlayerViewModel())
     }
 }

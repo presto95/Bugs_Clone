@@ -2,19 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:UIKitApp/UIKitApp.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:UIKitMusicPlayer/UIKitMusicPlayer.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:SwiftUIApp/SwiftUIApp.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:SwiftUIMusicPlayer/SwiftUIMusicPlayer.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Walkman/Walkman.xcodeproj">
+      location = "group:SwiftUIApp/../Walkman/Walkman.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:WalkmanContentsProvider/WalkmanContentsProvider.xcodeproj">

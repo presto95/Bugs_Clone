@@ -1,5 +1,5 @@
 //
-//  AppDelegate.swift
+//  UIKitAppDelegate.swift
 //  UIKitApp
 //
 //  Created by Presto on 2021/07/02.
@@ -10,7 +10,7 @@ import WalkmanContentsProvider
 import Then
 
 @main
-final class AppDelegate: UIResponder, UIApplicationDelegate {
+final class UIKitAppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

@@ -18,7 +18,8 @@ struct SwiftUIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MusicPlayerView()
+            let viewModel = MusicPlayerViewModel()
+            MusicPlayerView(viewModel: viewModel)
         }
     }
 }
