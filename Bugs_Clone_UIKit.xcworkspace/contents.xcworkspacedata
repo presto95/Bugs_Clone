@@ -5,6 +5,9 @@
       location = "group:UIKitApp/UIKitApp.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:UIKitMusicPlayer/UIKitMusicPlayer.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Walkman/Walkman.xcodeproj">
    </FileRef>
    <FileRef

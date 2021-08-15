@@ -5,6 +5,9 @@
       location = "group:SwiftUIApp/SwiftUIApp.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:SwiftUIMusicPlayer/SwiftUIMusicPlayer.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:SwiftUIApp/../Walkman/Walkman.xcodeproj">
    </FileRef>
    <FileRef
