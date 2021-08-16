@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "container:"
+      name = "UIKit">
+      <FileRef
+         location = "group:../UIKit Project/Bugs_Clone_UIKit/Bugs_Clone_UIKit.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:../UIKit Project/MusicPlayerUI_UIKit/MusicPlayerUI_UIKit.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "SwiftUI">
+      <FileRef
+         location = "group:../SwiftUI Project/Bugs_Clone_SwiftUI/Bugs_Clone_SwiftUI.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:../SwiftUI Project/MusicPlayerUI_SwiftUI/MusicPlayerUI_SwiftUI.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "Domain">
+      <FileRef
+         location = "group:../Domain/MusicPlayerCommon/MusicPlayerCommon.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "container:"
+      name = "Shared">
+      <FileRef
+         location = "group:../Shared/Walkman/Walkman.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:../Shared/WalkmanContentsProvider/WalkmanContentsProvider.xcodeproj">
+      </FileRef>
+      <FileRef
+         location = "group:../Shared/Common/Common.xcodeproj">
+      </FileRef>
+   </Group>
+</Workspace>
