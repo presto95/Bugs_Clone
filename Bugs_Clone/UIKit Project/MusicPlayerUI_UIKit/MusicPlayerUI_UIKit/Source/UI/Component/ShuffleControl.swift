@@ -6,18 +6,14 @@
 //
 
 import UIKit
+import MusicPlayerCommon
 import Common
 
 final class ShuffleControl: UIControl {
-    enum Status: String {
-        case off
-        case on
-    }
-
     @Published private(set) var tap: Void?
-    @Published var status: Status = .off {
+    @Published var mode: ShuffleMode = .off {
         didSet {
-            UserDefaults.standard.lastShuffleStatus = status
+            UserDefaults.standard.lastShuffleMode = mode
             setNeedsLayout()
         }
     }
@@ -43,12 +39,12 @@ final class ShuffleControl: UIControl {
 // MARK: - MusicControl
 
 extension ShuffleControl: MusicControl {
-    func setNextStatus(animated: Bool) {
-        switch status {
+    func setNextMode(animated: Bool) {
+        switch mode {
         case .off:
-            self.status = .on
+            self.mode = .on
         case .on:
-            self.status = .off
+            self.mode = .off
         }
 
         if animated {
@@ -77,7 +73,7 @@ private extension ShuffleControl {
     }
 
     func updateViews() {
-        self.alpha = Const.alpha(status: status)
+        self.alpha = Const.alpha(mode: mode)
     }
 
     @objc func viewDidTap(_ sender: UIControl) {
@@ -89,8 +85,8 @@ private extension ShuffleControl {
 
 private extension ShuffleControl {
     enum Const {
-        static func alpha(status: Status) -> CGFloat {
-            switch status {
+        static func alpha(mode: ShuffleMode) -> CGFloat {
+            switch mode {
             case .off:
                 return 0.4
             case .on:

@@ -26,7 +26,7 @@ final class PrecedentControl: UIControl {
 // MARK: - MusicControl
 
 extension PrecedentControl: MusicControl {
-    func setNextStatus(animated: Bool) {
+    func setNextMode(animated: Bool) {
         if animated {
             runScaleAnimation(to: imageView)
         }

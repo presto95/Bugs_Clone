@@ -6,16 +6,12 @@
 //
 
 import UIKit
+import MusicPlayerCommon
 import Combine
 
 final class PlayPauseControl: UIControl {
-    enum Status: String {
-        case play
-        case pause
-    }
-
     @Published private(set) var tap: Void?
-    @Published var status: Status = .pause {
+    @Published var mode: PlayPauseMode = .pause {
         didSet {
             setNeedsLayout()
         }
@@ -42,12 +38,12 @@ final class PlayPauseControl: UIControl {
 // MARK: - MusicControl
 
 extension PlayPauseControl: MusicControl {
-    func setNextStatus(animated: Bool) {
-        switch status {
+    func setNextMode(animated: Bool) {
+        switch mode {
         case .play:
-            self.status = .pause
+            self.mode = .pause
         case .pause:
-            self.status = .play
+            self.mode = .play
         }
 
         if animated {
@@ -63,7 +59,7 @@ private extension PlayPauseControl {
         addTarget(self, action: #selector(viewDidTap(_:)), for: .touchUpInside)
 
         imageView.do {
-            $0.image = Const.image(status: status)
+            $0.image = Const.image(mode: mode)
         }
 
         subviews {
@@ -76,7 +72,7 @@ private extension PlayPauseControl {
     }
 
     func updateViews() {
-        imageView.image = Const.image(status: status)
+        imageView.image = Const.image(mode: mode)
     }
 
     func runScaleEffect() {
@@ -100,8 +96,8 @@ private extension PlayPauseControl {
 
 private extension PlayPauseControl {
     enum Const {
-        static func image(status: Status) -> UIImage? {
-            switch status {
+        static func image(mode: PlayPauseMode) -> UIImage? {
+            switch mode {
             case .play:
                 return UIImage(systemName: "pause")
             case .pause:

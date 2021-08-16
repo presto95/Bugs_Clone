@@ -7,10 +7,11 @@
 
 import SwiftUI
 import Combine
+import MusicPlayerCommon
 
 public struct MusicPlayerView: View {
     @ObservedObject private var viewModel: MusicPlayerViewModel
-    @State private var displayingInfo: MusicPlayerDisplayingInfo = .albumCover
+    @State private var displayingInfo: DisplayingInfo = .albumCover
 
     public init(viewModel: MusicPlayerViewModel) {
         self.viewModel = viewModel
@@ -23,14 +24,14 @@ public struct MusicPlayerView: View {
 
             bottomView
         }
-        .frame(width: .infinity, height: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 private extension MusicPlayerView {
     @ViewBuilder var topView: some View {
         let viewModel = MusicPlayerTopViewModel()
-        MusicPlayerTopView(viewModel: viewModel, displayingInfo: $displayingInfo)
+        MusicPlayerTopView(viewModel: viewModel)
     }
 
     @ViewBuilder var bottomView: some View {

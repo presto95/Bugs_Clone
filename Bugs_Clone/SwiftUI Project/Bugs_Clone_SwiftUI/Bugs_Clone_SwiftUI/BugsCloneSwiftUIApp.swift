@@ -22,6 +22,7 @@ struct BugsCloneSwiftUIApp: App {
                 let viewModel = MusicPlayerViewModel()
                 MusicPlayerView(viewModel: viewModel)
             }
+            .accentColor(.primary)
         }
     }
 }

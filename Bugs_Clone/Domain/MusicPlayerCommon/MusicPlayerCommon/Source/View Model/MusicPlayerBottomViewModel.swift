@@ -1,22 +1,21 @@
 //
 //  MusicPlayerBottomViewModel.swift
-//  MusicPlayerUI_SwiftUI
+//  MusicPlayerCommon
 //
-//  Created by Presto on 2021/08/15.
+//  Created by Presto on 2021/07/24.
 //
 
 import Combine
 import Common
 
-final class MusicPlayerBottomViewModel: ObservableObject {
-    @Published var currentTime: TimeInterval = .zero
-    @Published private(set) var currentTimeString: String?
-    @Published var endTime: TimeInterval = .zero
-    @Published private(set) var endTimeString: String?
-
-    @Published private(set) var title: String?
-    @Published private(set) var album: String?
-    @Published private(set) var artist: String?
+public final class MusicPlayerBottomViewModel: ObservableObject {
+    @Published public private(set) var title: String?
+    @Published public private(set) var album: String?
+    @Published public private(set) var artist: String?
+    @Published public private(set) var currentTimeInSeconds: TimeInterval?
+    @Published public private(set) var currentTime: String?
+    @Published public private(set) var endTimeInSeconds: TimeInterval?
+    @Published public private(set) var endTime: String?
 
     private let titleSubject = CurrentValueSubject<String?, Never>(nil)
     private let albumSubject = CurrentValueSubject<String?, Never>(nil)
@@ -26,7 +25,7 @@ final class MusicPlayerBottomViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
+    public init() {
         titleSubject
             .removeDuplicates()
             .assign(to: \.title, on: self)
@@ -44,27 +43,39 @@ final class MusicPlayerBottomViewModel: ObservableObject {
 
         currentTimeSubject
             .removeDuplicates()
+            .assign(to: \.currentTimeInSeconds, on: self)
+            .store(in: &cancellables)
+
+        currentTimeSubject
+            .removeDuplicates()
             .map { $0 ?? 0 }
             .map { Formatter.durationToString($0) }
-            .assign(to: \.currentTimeString, on: self)
+            .assign(to: \.currentTime, on: self)
+            .store(in: &cancellables)
+
+        endTimeSubject
+            .removeDuplicates()
+            .assign(to: \.endTimeInSeconds, on: self)
             .store(in: &cancellables)
 
         endTimeSubject
             .removeDuplicates()
             .map { $0 ?? 0 }
             .map { Formatter.durationToString($0) }
-            .assign(to: \.endTimeString, on: self)
+            .assign(to: \.endTime, on: self)
             .store(in: &cancellables)
     }
 
-    func setData(title: String?, album: String?, artist: String?, endTime: TimeInterval) {
+    // MARK: Input
+
+    public func setSongInfo(title: String?, album: String?, artist: String?, endTime: TimeInterval) {
         titleSubject.send(title)
         albumSubject.send(album)
         artistSubject.send(artist)
         endTimeSubject.send(endTime)
     }
 
-    func setCurrentTime(_ currentTime: TimeInterval) {
+    public func setCurrentTime(_ currentTime: TimeInterval) {
         currentTimeSubject.send(currentTime)
     }
 }

@@ -56,7 +56,7 @@ final class MusicPlayerBottomViewModel: ObservableObject {
 
     // MARK: Input
 
-    func setData(title: String?, album: String?, artist: String?, endTime: TimeInterval) {
+    func setSongInfo(title: String?, album: String?, artist: String?, endTime: TimeInterval) {
         titleSubject.send(title)
         albumSubject.send(album)
         artistSubject.send(artist)

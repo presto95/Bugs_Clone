@@ -6,6 +6,7 @@
 //
 
 import Combine
+import MusicPlayerCommon
 import Walkman
 import WalkmanContentsProvider
 import Common
@@ -49,6 +50,7 @@ public final class MusicPlayerViewModel: ObservableObject {
 
 
             })
+            .store(in: &cancellables)
 
         let sharedMusicRequestResult = musicRequestResultSubject
             .tryCompactMap { try $0?.get() }
@@ -69,7 +71,7 @@ public final class MusicPlayerViewModel: ObservableObject {
                 }
             }, receiveValue: { [weak self] imageData in
                 self?.albumCoverImageDataSubject.send(imageData)
-                self?.topViewModel?.setAlbumCoverImageData(imageData)
+                self?.topViewModel?.albumCoverViewModel?.setAlbumCoverImageData(imageData)
             })
             .store(in: &cancellables)
 
@@ -100,11 +102,11 @@ public final class MusicPlayerViewModel: ObservableObject {
                     break
                 }
             }, receiveValue: { [weak self] data in
-                self?.topViewModel?.setLyricsRawString(data.lyrics)
-                self?.bottomViewModel?.setData(title: data.title,
-                                               album: data.album,
-                                               artist: data.singer,
-                                               endTime: TimeInterval(data.duration))
+                self?.topViewModel?.lyricsViewModel?.setLyricRawString(data.lyrics)
+                self?.bottomViewModel?.setSongInfo(title: data.title,
+                                                   album: data.album,
+                                                   artist: data.singer,
+                                                   endTime: TimeInterval(data.duration))
             })
             .store(in: &cancellables)
     }
@@ -130,7 +132,7 @@ private extension MusicPlayerViewModel {
         musicPlayer.currentTimeDidUpdatePublisher
             .compactMap { $0 }
             .sink { [weak self] currentTime in
-                self?.musicInteractor?.updateCurrentTime(currentTime)
+//                self?.musicInteractor?.updateCurrentTime(currentTime)
             }
             .store(in: &cancellables)
 
@@ -138,14 +140,14 @@ private extension MusicPlayerViewModel {
             .compactMap { $0 }
             .filter { $0 }
             .sink { [weak self] _ in
-                self?.musicInteractor?.reset()
+//                self?.musicInteractor?.reset()
             }
             .store(in: &cancellables)
 
         musicPlayer.decodeErrorDidOccurPublisher
             .compactMap { $0 }
             .sink { [weak self] error in
-                self?.navigationInteracotr?.presentAlert(withMessage: error.localizedDescription)
+//                self?.navigationInteractor?.presentAlert(withMessage: error.localizedDescription)
             }
             .store(in: &cancellables)
     }

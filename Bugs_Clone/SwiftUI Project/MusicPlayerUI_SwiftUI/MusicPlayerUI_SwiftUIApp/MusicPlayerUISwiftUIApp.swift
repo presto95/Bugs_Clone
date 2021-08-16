@@ -19,6 +19,7 @@ struct SwiftUIMusicPlayerApp: App {
         WindowGroup {
             let viewModel = MusicPlayerViewModel()
             MusicPlayerView(viewModel: viewModel)
+                .accentColor(.primary)
         }
     }
 }

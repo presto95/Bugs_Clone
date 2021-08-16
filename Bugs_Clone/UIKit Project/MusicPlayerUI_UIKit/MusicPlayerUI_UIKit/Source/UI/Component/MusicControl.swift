@@ -8,7 +8,7 @@
 import UIKit
 
 protocol MusicControl {
-    func setNextStatus(animated: Bool)
+    func setNextMode(animated: Bool)
 }
 
 extension MusicControl {

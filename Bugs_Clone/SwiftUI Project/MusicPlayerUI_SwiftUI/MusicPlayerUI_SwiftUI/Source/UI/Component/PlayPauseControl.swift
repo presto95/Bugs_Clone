@@ -6,36 +6,36 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct PlayPauseControl: View {
-    enum Status: String {
-        case play
-        case pause
-    }
-
-    @State private var status: Status = .pause
     private var action: () -> Void
+    @State private var mode: PlayPauseMode = .pause
 
-    init(action: @escaping () -> Void, initialStatus: Status = .pause) {
+    init(action: @escaping () -> Void, initialMode: PlayPauseMode = .pause) {
         self.action = action
-        self.status = initialStatus
+        self.mode = initialMode
     }
 
     var body: some View {
         Button(action: {
             action()
         }, label: {
-            Image({
-                switch status {
+            Image(systemName: {
+                switch mode {
                 case .play:
                     return "pause"
                 case .pause:
                     return "play"
                 }
             }())
+            .resizable()
+            .aspectRatio(contentMode: .fit)
         })
     }
 }
+
+// MARK: - Preview
 
 struct PlayPauseControl_Previews: PreviewProvider {
     static var previews: some View {

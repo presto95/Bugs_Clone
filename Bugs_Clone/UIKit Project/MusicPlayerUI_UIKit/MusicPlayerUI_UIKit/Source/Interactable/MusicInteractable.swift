@@ -5,7 +5,7 @@
 //  Created by Presto on 2021/08/08.
 //
 
-import Foundation
+import MusicPlayerCommon
 
 protocol MusicInteractable: AnyObject {
     var musicPlayer: MusicPlayerProtocol? { get }

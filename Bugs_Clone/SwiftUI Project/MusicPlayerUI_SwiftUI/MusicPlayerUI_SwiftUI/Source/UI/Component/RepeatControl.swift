@@ -6,46 +6,52 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct RepeatControl: View {
-    enum Status: String {
-        case off
-        case one
-    }
-
-    @State private var status: Status = .off
     private var action: () -> Void
+    @State private var mode: RepeatMode = .off
 
-    init(action: @escaping () -> Void, initialStatus: Status = .off) {
+    init(action: @escaping () -> Void, initialMode: RepeatMode = .off) {
         self.action = action
-        self.status = initialStatus
+        self.mode = initialMode
     }
 
     var body: some View {
         Button(action: {
             action()
         }, label: {
-            Image({
-                switch status {
+            Image(systemName: {
+                switch mode {
                 case .off:
                     return "repeat"
                 case .one:
                     return "repeat.1"
                 }
             }())
+            .resizable()
+            .aspectRatio(contentMode: .fit)
         })
     }
 
-    func setNextStatus(animated: Bool) {
-        switch status {
+    func setNextMode(animated: Bool) {
+        switch mode {
         case .off:
-            self.status = .one
+            self.mode = .one
         case .one:
-            self.status = .off
+            self.mode = .off
         }
 
         if animated {
 
         }
+    }
+}
+
+// MARK: - Preview
+
+struct RepeatControl_Previews: PreviewProvider {
+    static var previews: some View {
+        RepeatControl(action: {})
     }
 }

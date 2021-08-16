@@ -26,7 +26,7 @@ final class SubsequentControl: UIControl {
 // MARK: - MusicControl
 
 extension SubsequentControl: MusicControl {
-    func setNextStatus(animated: Bool) {
+    func setNextMode(animated: Bool) {
         if animated {
             runScaleAnimation(to: imageView)
         }

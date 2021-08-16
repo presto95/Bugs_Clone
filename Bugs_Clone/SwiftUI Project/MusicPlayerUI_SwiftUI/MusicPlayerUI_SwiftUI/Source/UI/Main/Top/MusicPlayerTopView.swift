@@ -11,28 +11,42 @@ import MusicPlayerCommon
 struct MusicPlayerTopView: View {
     @ObservedObject private var viewModel: MusicPlayerTopViewModel
 
-    @Binding var displayingInfo: DisplayingInfo
-
-    init(viewModel: MusicPlayerTopViewModel, displayingInfo: Binding<DisplayingInfo>) {
+    init(viewModel: MusicPlayerTopViewModel) {
         self.viewModel = viewModel
-        self._displayingInfo = displayingInfo
     }
 
     var body: some View {
-        switch displayingInfo {
-        case .albumCover:
-            let viewModel = MusicPlayerAlbumCoverViewModel()
-            MusicPlayerAlbumCoverView(viewModel: viewModel)
-        case .lyric:
-            let viewModel = MusicPlayerLyricsViewModel()
-            MusicPlayerLyricsView(viewModel: viewModel)
+        Group {
+            switch viewModel.displayingInfo {
+            case .albumCover:
+                albumCoverView
+            case .lyric:
+                lyricsView
+            }
+        }
+        .animation(.easeInOut)
+        .onTapGesture {
+            viewModel.setNextDisplayingInfo()
         }
     }
 }
 
+private extension MusicPlayerTopView {
+    @ViewBuilder var albumCoverView: some View {
+        let viewModel = MusicPlayerAlbumCoverViewModel()
+        MusicPlayerAlbumCoverView(viewModel: viewModel)
+    }
+
+    @ViewBuilder var lyricsView: some View {
+        let viewModel = MusicPlayerLyricsViewModel()
+        MusicPlayerLyricsView(viewModel: viewModel)
+    }
+}
+
+// MARK: - Preview
+
 struct MusicPlayerTopView_Previews: PreviewProvider {
     static var previews: some View {
-        MusicPlayerTopView(viewModel: MusicPlayerTopViewModel(),
-                           displayingInfo: .constant(.albumCover))
+        MusicPlayerTopView(viewModel: MusicPlayerTopViewModel())
     }
 }

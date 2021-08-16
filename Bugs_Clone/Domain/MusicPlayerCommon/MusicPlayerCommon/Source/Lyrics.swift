@@ -1,19 +1,24 @@
 //
 //  Lyrics.swift
-//  MusicPlayerUI_UIKit
+//  MusicPlayerCommon
 //
 //  Created by Presto on 2021/08/08.
 //
 
 import Foundation
 
-struct Lyrics {
-    private var storage: [(time: TimeInterval, lyric: String)] = []
+public struct Lyrics: Equatable {
+    public struct Item: Equatable {
+        public var time: TimeInterval
+        public var lyric: String
+    }
 
-    init?(response: String?) {
-        guard let response = response else { return nil }
+    private var storage: [Item] = []
 
-        let components = response.components(separatedBy: "\n")
+    public init?(rawData: String?) {
+        guard let rawData = rawData else { return nil }
+
+        let components = rawData.components(separatedBy: "\n")
 
         for component in components {
             let array = Array(component)
@@ -30,47 +35,63 @@ struct Lyrics {
             let millisecondToSecond = (Double(millisecondString) ?? 0) / 1000
             let seconds = minuteToSecond + (Double(secondString) ?? 0) + millisecondToSecond
 
-            storage.append((seconds, lyricString))
+            storage.append(Item(time: seconds, lyric: lyricString))
         }
+
+        if storage.isEmpty { return nil }
     }
 
-    var count: Int {
+    public var count: Int {
         return storage.count
     }
 
-    func index(before time: TimeInterval) -> Int? {
+    public func index(before time: TimeInterval) -> Int? {
         return storage.lastIndex(where: { $0.time <= time })
     }
 
-    func index(after time: TimeInterval) -> Int? {
+    public func index(after time: TimeInterval) -> Int? {
         return storage.firstIndex(where: { $0.time >= time })
     }
 
-    func lyric(before time: TimeInterval) -> String? {
+    public func lyricItem(before time: TimeInterval) -> Item? {
+        guard let index = index(before: time) else { return nil }
+        return storage[index]
+    }
+
+    public func lyric(before time: TimeInterval) -> String? {
         guard let index = index(before: time) else { return nil }
         return storage[index].lyric
     }
 
-    func lyricTime(before time: TimeInterval) -> TimeInterval? {
+    public func lyricTime(before time: TimeInterval) -> TimeInterval? {
         guard let index = index(before: time) else { return nil }
         return storage[index].time
     }
 
-    func lyric(after time: TimeInterval) -> String? {
+    public func lyricItem(after time: TimeInterval) -> Item? {
+        guard let index = index(after: time) else { return nil }
+        return storage[index]
+    }
+
+    public func lyric(after time: TimeInterval) -> String? {
         guard let index = index(after: time) else { return nil }
         return storage[index].lyric
     }
 
-    func lyricTime(after time: TimeInterval) -> TimeInterval? {
+    public func lyricTime(after time: TimeInterval) -> TimeInterval? {
         guard let index = index(after: time) else { return nil }
         return storage[index].time
     }
 
-    func lyric(at index: Int) -> String? {
+    public func lyricItem(at index: Int) -> Item? {
+        return storage[index]
+    }
+
+    public func lyric(at index: Int) -> String? {
         return storage[index].lyric
     }
 
-    func lyricTime(at index: Int) -> TimeInterval? {
+    public func lyricTime(at index: Int) -> TimeInterval? {
         return storage[index].time
     }
 }

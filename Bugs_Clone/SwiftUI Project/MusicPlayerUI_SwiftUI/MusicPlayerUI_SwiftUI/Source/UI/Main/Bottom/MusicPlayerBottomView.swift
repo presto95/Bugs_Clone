@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct MusicPlayerBottomView: View {
     @ObservedObject private var viewModel: MusicPlayerBottomViewModel
@@ -25,24 +26,24 @@ struct MusicPlayerBottomView: View {
 
             musicControlView
         }
-        .frame(width: .infinity)
+        .frame(maxWidth: .infinity)
     }
 }
 
 private extension MusicPlayerBottomView {
     var seekbar: some View {
-        Seekbar(currentTime: $viewModel.currentTime, endTime: $viewModel.endTime)
+        Seekbar(currentTime: viewModel.currentTimeInSeconds ?? 0, endTime: viewModel.endTimeInSeconds ?? 0)
     }
 
     var timeView: some View {
         HStack {
-            Text(viewModel.currentTimeString ?? "")
+            Text(viewModel.currentTime ?? "")
                 .foregroundColor(.primary)
                 .font(.footnote)
 
             Spacer()
 
-            Text(viewModel.endTimeString ?? "")
+            Text(viewModel.endTime ?? "")
                 .foregroundColor(.primary)
                 .font(.footnote)
         }
@@ -68,7 +69,7 @@ private extension MusicPlayerBottomView {
 
     var musicControlView: some View {
         MusicControlView()
-            .repeatCntrolAction {
+            .repeatControlAction {
 
             }
             .precedentControlAction {

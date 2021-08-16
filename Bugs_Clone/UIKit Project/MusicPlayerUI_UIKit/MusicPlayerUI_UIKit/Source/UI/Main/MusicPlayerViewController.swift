@@ -120,7 +120,7 @@ extension MusicPlayerViewController: MusicInteractable {
     }
 
     var lyricsView: LyricsViewProtocol? {
-        return topView.lyricView
+        return topView.lyricsView
     }
 
     var musicControlView: MusicControlView? {
@@ -145,7 +145,7 @@ extension MusicPlayerViewController: MusicInteractable {
         try? musicPlayer?.stop()
         seekbar?.currentTime = 0
         bottomView.updateCurrentTime(0)
-        musicControlView?.playPauseControl.setNextStatus(animated: false)
+        musicControlView?.playPauseControl.setNextMode(animated: false)
         lyricsView?.unselectLyricItem()
     }
 

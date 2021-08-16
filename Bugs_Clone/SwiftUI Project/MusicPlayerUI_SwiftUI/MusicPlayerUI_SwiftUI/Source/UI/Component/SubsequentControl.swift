@@ -18,10 +18,14 @@ struct SubsequentControl: View {
         Button(action: {
             action()
         }, label: {
-            Image("forward.end")
+            Image(systemName: "forward.end")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         })
     }
 }
+
+// MARK: - Preview
 
 struct SubsequentControl_Previews: PreviewProvider {
     static var previews: some View {

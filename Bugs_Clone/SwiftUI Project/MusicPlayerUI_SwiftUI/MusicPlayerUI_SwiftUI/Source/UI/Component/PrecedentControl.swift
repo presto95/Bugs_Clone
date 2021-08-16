@@ -18,13 +18,18 @@ struct PrecedentControl: View {
         Button(action: {
             action()
         }, label: {
-            Image("backward.end")
+            Image(systemName: "backward.end")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         })
     }
 }
 
+// MARK: - Preview
+
 struct PrecedentControl_Previews: PreviewProvider {
     static var previews: some View {
         PrecedentControl(action: {})
+            .frame(width: 50, height: 50)
     }
 }

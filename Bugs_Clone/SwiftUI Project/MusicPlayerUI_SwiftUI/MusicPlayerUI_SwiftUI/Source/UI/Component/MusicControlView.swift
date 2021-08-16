@@ -44,12 +44,12 @@ struct MusicControlView: View {
                 shuffleControlAction?()
             })
         }
-        .frame(width: .infinity, height: UIScreen.main.bounds.width / 10)
+        .frame(maxWidth: .infinity)
     }
 }
 
 extension MusicControlView {
-    func repeatCntrolAction(_ action: @escaping () -> Void) -> Self {
+    func repeatControlAction(_ action: @escaping () -> Void) -> Self {
         var `self` = self
         self.repeatControlAction = action
         return self

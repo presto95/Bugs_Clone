@@ -6,29 +6,27 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct ShuffleControl: View {
-    enum Status: String {
-        case off
-        case on
-    }
-
     private var action: () -> Void
-    @State private var status: Status = .off
+    @State private var mode: ShuffleMode = .off
 
-    init(action: @escaping () -> Void, initialStatus: Status = .off) {
+    init(action: @escaping () -> Void, initialMode: ShuffleMode = .off) {
         self.action = action
-        self.status = initialStatus
+        self.mode = initialMode
     }
 
     var body: some View {
         Button(action: {
             action()
         }, label: {
-            Image("shuffle")
+            Image(systemName: "shuffle")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         })
         .opacity({
-            switch status {
+            switch mode {
             case .off:
                 return 0.4
             case .on:

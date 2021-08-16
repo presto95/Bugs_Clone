@@ -6,18 +6,14 @@
 //
 
 import UIKit
+import MusicPlayerCommon
 import Common
 
 final class RepeatControl: UIControl {
-    enum Status: String {
-        case off
-        case one
-    }
-
     @Published private(set) var tap: Void?
-    @Published var status: Status = .off {
+    @Published var mode: RepeatMode = .off {
         didSet {
-            UserDefaults.standard.lastRepeatStatus = status
+            UserDefaults.standard.lastRepeatMode = mode
             setNeedsLayout()
         }
     }
@@ -43,12 +39,12 @@ final class RepeatControl: UIControl {
 // MARK: - MusicControl
 
 extension RepeatControl: MusicControl {
-    func setNextStatus(animated: Bool) {
-        switch status {
+    func setNextMode(animated: Bool) {
+        switch mode {
         case .off:
-            self.status = .one
+            self.mode = .one
         case .one:
-            self.status = .off
+            self.mode = .off
         }
 
         if animated {
@@ -64,7 +60,7 @@ private extension RepeatControl {
         addTarget(self, action: #selector(viewDidTap(_:)), for: .touchUpInside)
 
         imageView.do {
-            $0.image = Const.image(status: status)
+            $0.image = Const.image(mode: mode)
         }
 
         subviews {
@@ -77,7 +73,7 @@ private extension RepeatControl {
     }
 
     func updateViews() {
-        imageView.image = Const.image(status: status)
+        imageView.image = Const.image(mode: mode)
     }
 
     @objc func viewDidTap(_ sender: UIControl) {
@@ -89,8 +85,8 @@ private extension RepeatControl {
 
 private extension RepeatControl {
     enum Const {
-        static func image(status: Status) -> UIImage? {
-            switch status {
+        static func image(mode: RepeatMode) -> UIImage? {
+            switch mode {
             case .off:
                 return UIImage(systemName: "repeat")
             case .one:

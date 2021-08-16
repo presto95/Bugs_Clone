@@ -1,5 +1,5 @@
 //
-//  MusicPlayerLyricView.swift
+//  MusicPlayerLyricsView.swift
 //  MusicPlayerUI_UIKit
 //
 //  Created by Presto on 2021/07/02.
@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import MusicPlayerCommon
 import Common
 
 protocol LyricsViewProtocol: AnyObject {
@@ -14,14 +15,14 @@ protocol LyricsViewProtocol: AnyObject {
     func unselectLyricItem()
 }
 
-final class MusicPlayerLyricView: UIView {
+final class MusicPlayerLyricsView: UIView {
     private lazy var tableView = UITableView(frame: .zero, style: .plain)
 
     private var musicInteractor: MusicInteractable? {
         return DIContainer.shared.resolve(MusicInteractable.self)
     }
 
-    private var viewModel: MusicPlayerLyricViewModel
+    private var viewModel: MusicPlayerLyricsViewModel
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -29,7 +30,7 @@ final class MusicPlayerLyricView: UIView {
         return tableView.visibleCells
     }
 
-    init(viewModel: MusicPlayerLyricViewModel) {
+    init(viewModel: MusicPlayerLyricsViewModel) {
         self.viewModel = viewModel
         super.init(frame: .zero)
         configureViews()
@@ -44,7 +45,7 @@ final class MusicPlayerLyricView: UIView {
 
 // MARK: - Interface
 
-extension MusicPlayerLyricView {
+extension MusicPlayerLyricsView {
     func updateSelectedLyricAlignmentToCenterY() {
         guard let selectedIndex = tableView.indexPathForSelectedRow?.row else { return }
         tableView.selectRow(at: IndexPath(row: selectedIndex, section: 0), animated: false, scrollPosition: .middle)
@@ -53,7 +54,7 @@ extension MusicPlayerLyricView {
 
 // MARK: - LyricsViewProtocol
 
-extension MusicPlayerLyricView: LyricsViewProtocol {
+extension MusicPlayerLyricsView: LyricsViewProtocol {
     func selectLyricItem(before time: TimeInterval) {
         guard let index = viewModel.lyrics?.index(before: time),
               tableView.indexPathForSelectedRow?.row != index else { return }
@@ -68,7 +69,7 @@ extension MusicPlayerLyricView: LyricsViewProtocol {
 
 // MARK: - UITableViewDataSource
 
-extension MusicPlayerLyricView: UITableViewDataSource {
+extension MusicPlayerLyricsView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         if let lyricCell = cell as? MusicPlayerLyricCell {
@@ -85,7 +86,7 @@ extension MusicPlayerLyricView: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 
-extension MusicPlayerLyricView: UITableViewDelegate {
+extension MusicPlayerLyricsView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let lyricTime = viewModel.lyrics?.lyricTime(at: indexPath.row) else { return }
 
@@ -98,7 +99,7 @@ extension MusicPlayerLyricView: UITableViewDelegate {
 
 // MARK: - Private Method
 
-private extension MusicPlayerLyricView {
+private extension MusicPlayerLyricsView {
     func configureViews() {
         tableView.do {
             $0.backgroundColor = .clear

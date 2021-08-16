@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct MusicPlayerLyricsView: View {
     @ObservedObject private var viewModel: MusicPlayerLyricsViewModel
@@ -15,9 +16,18 @@ struct MusicPlayerLyricsView: View {
     }
 
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        if let lyrics = viewModel.lyrics {
+            List(0 ..< lyrics.count) { index in
+                let lyric = lyrics.lyric(at: index)
+                Text(lyric ?? "")
+            }
+        } else {
+            Text("No Lyrics")
+        }
     }
 }
+
+// MARK: - Preview
 
 struct MusicPlayerLyricsView_Previews: PreviewProvider {
     static var previews: some View {

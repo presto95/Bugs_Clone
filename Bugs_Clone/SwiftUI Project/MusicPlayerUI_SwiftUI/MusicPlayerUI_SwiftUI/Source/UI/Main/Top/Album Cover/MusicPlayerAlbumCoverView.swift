@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct MusicPlayerAlbumCoverView: View {
     @ObservedObject private var viewModel: MusicPlayerAlbumCoverViewModel
@@ -24,6 +25,8 @@ struct MusicPlayerAlbumCoverView: View {
         }
     }
 }
+
+// MARK: - Preview
 
 struct MusicPlayerAlbumCoverView_Previews: PreviewProvider {
     static var previews: some View {

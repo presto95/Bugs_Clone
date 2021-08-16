@@ -7,6 +7,7 @@
 
 import UIKit
 import Combine
+import MusicPlayerCommon
 import Common
 
 final class MusicPlayerBottomView: UIView {
@@ -15,7 +16,7 @@ final class MusicPlayerBottomView: UIView {
     private lazy var endTimeLabel = UILabel()
     private lazy var songInfoViewContainerView = UIView()
     private lazy var musicControlViewContainerView = UIView()
-    private lazy var songInfoView = SongInfoView()
+    private lazy var songInfoView = MusicPlayerSongInfoView()
     private(set) lazy var musicControlView = MusicControlView()
 
     private var navigationInteractor: NavigationInteractable? {
@@ -132,14 +133,14 @@ private extension MusicPlayerBottomView {
         musicControlView.repeatControl.$tap
             .compactMap { $0 }
             .sink { [weak self] _ in
-                self?.musicControlView.repeatControl.setNextStatus(animated: true)
+                self?.musicControlView.repeatControl.setNextMode(animated: true)
             }
             .store(in: &cancellables)
 
         musicControlView.precedentControl.$tap
             .compactMap { $0 }
             .sink { [weak self] _ in
-                self?.musicControlView.precedentControl.setNextStatus(animated: true)
+                self?.musicControlView.precedentControl.setNextMode(animated: true)
             }
             .store(in: &cancellables)
 
@@ -147,19 +148,19 @@ private extension MusicPlayerBottomView {
             $0.$tap
                 .compactMap { $0 }
                 .sink { [weak self] _ in
-                    let status = self?.musicControlView.playPauseControl.status
-                    switch status {
+                    let mode = self?.musicControlView.playPauseControl.mode
+                    switch mode {
                     case .play:
                         do {
                             try self?.musicInteractor?.pauseMusic()
-                            self?.musicControlView.playPauseControl.setNextStatus(animated: true)
+                            self?.musicControlView.playPauseControl.setNextMode(animated: true)
                         } catch {
                             self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
                         }
                     case .pause:
                         do {
                             try self?.musicInteractor?.playMusic()
-                            self?.musicControlView.playPauseControl.setNextStatus(animated: true)
+                            self?.musicControlView.playPauseControl.setNextMode(animated: true)
                         } catch {
                             self?.navigationInteractor?.presentAlert(withMessage: "RETRY")
                         }
@@ -173,14 +174,14 @@ private extension MusicPlayerBottomView {
         musicControlView.subsequentControl.$tap
             .compactMap { $0 }
             .sink { [weak self] _ in
-                self?.musicControlView.subsequentControl.setNextStatus(animated: true)
+                self?.musicControlView.subsequentControl.setNextMode(animated: true)
             }
             .store(in: &cancellables)
 
         musicControlView.shuffleControl.$tap
             .compactMap { $0 }
             .sink { [weak self] _ in
-                self?.musicControlView.shuffleControl.setNextStatus(animated: true)
+                self?.musicControlView.shuffleControl.setNextMode(animated: true)
             }
             .store(in: &cancellables)
     }

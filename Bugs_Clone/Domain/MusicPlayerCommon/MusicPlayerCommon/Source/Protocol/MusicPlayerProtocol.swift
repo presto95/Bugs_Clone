@@ -1,13 +1,14 @@
 //
-//  WalkmanProtocol.swift
-//  MusicPlayerUI_UIKit
+//  MusicPlayerProtocol.swift
+//  MusicPlayerCommon
 //
-//  Created by Presto on 2021/08/15.
+//  Created by Presto on 2021/08/16.
 //
 
 import Foundation
+import Combine
 
-protocol MusicPlayerProtocol: AnyObject {
+public protocol MusicPlayerProtocol: AnyObject {
     var isPlaying: Bool { get }
     var currentTime: TimeInterval { get set }
     var endTime: TimeInterval { get }

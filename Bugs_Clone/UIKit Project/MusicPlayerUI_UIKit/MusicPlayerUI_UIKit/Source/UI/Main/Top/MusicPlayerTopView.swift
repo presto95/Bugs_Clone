@@ -7,11 +7,12 @@
 
 import UIKit
 import Combine
+import MusicPlayerCommon
 import Common
 
 final class MusicPlayerTopView: UIView {
-    private lazy var albumCoverImageView = UIImageView()
-    private(set) var lyricView: MusicPlayerLyricView!
+    private var albumCoverView: MusicPlayerAlbumCoverView!
+    private(set) var lyricsView: MusicPlayerLyricsView!
 
     private var musicPlayerRootUIInteractor: MusicPlayerRootUIInteractable? {
         return DIContainer.shared.resolve(MusicPlayerRootUIInteractable.self)
@@ -42,28 +43,30 @@ private extension MusicPlayerTopView {
         tapGestureRecognizer.delegate = self
         addGestureRecognizer(tapGestureRecognizer)
 
-        albumCoverImageView.do {
-            $0.contentMode = .scaleAspectFit
+        let albumCoverViewModel = MusicPlayerAlbumCoverViewModel()
+        albumCoverView = MusicPlayerAlbumCoverView(viewModel: albumCoverViewModel)
+        viewModel.albumCoverViewModel = albumCoverViewModel
+        albumCoverView.do {
             $0.alpha = 1
         }
 
-        let lyricViewModel = MusicPlayerLyricViewModel()
-        lyricView = MusicPlayerLyricView(viewModel: lyricViewModel)
-        viewModel.lyricViewModel = lyricViewModel
-        lyricView.do {
+        let lyricsViewModel = MusicPlayerLyricsViewModel()
+        lyricsView = MusicPlayerLyricsView(viewModel: lyricsViewModel)
+        viewModel.lyricsViewModel = lyricsViewModel
+        lyricsView.do {
             $0.alpha = 0
         }
 
         subviews {
-            albumCoverImageView
-            lyricView
+            albumCoverView
+            lyricsView
         }
 
-        albumCoverImageView.snp.makeConstraints { make in
+        albumCoverView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
-        lyricView.snp.makeConstraints { make in
+        lyricsView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
     }
@@ -78,8 +81,8 @@ private extension MusicPlayerTopView {
                                delay: 0,
                                options: .curveEaseInOut,
                                animations: {
-                                self?.albumCoverImageView.alpha = 1
-                                self?.lyricView.alpha = 0
+                                self?.albumCoverView.alpha = 1
+                                self?.lyricsView.alpha = 0
                                },
                                completion: nil)
             }
@@ -89,24 +92,17 @@ private extension MusicPlayerTopView {
             .filter { $0 == .lyric }
             .sink { [weak self] _ in
                 self?.musicPlayerRootUIInteractor?.adjustRootViews(by: .lyric)
-                self?.lyricView.updateSelectedLyricAlignmentToCenterY()
+                self?.lyricsView.updateSelectedLyricAlignmentToCenterY()
 
                 UIView.animate(withDuration: 0.2,
                                delay: 0,
                                options: .curveEaseInOut,
                                animations: {
-                                self?.albumCoverImageView.alpha = 0
-                                self?.lyricView.alpha = 1
+                                self?.albumCoverView.alpha = 0
+                                self?.lyricsView.alpha = 1
                                },
                                completion: nil)
             }
-            .store(in: &cancellables)
-
-        viewModel.$albumCoverImageData
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0 }
-            .compactMap(UIImage.init)
-            .assign(to: \.image, on: albumCoverImageView)
             .store(in: &cancellables)
     }
 
@@ -122,7 +118,7 @@ extension MusicPlayerTopView: UIGestureRecognizerDelegate {
         guard viewModel.displayingInfo == .lyric else { return true }
 
         let touchedPoint = gestureRecognizer.location(in: self)
-        let visibleCells = lyricView.visibleLyricCells
+        let visibleCells = lyricsView.visibleLyricCells
         for cell in visibleCells {
             if let textLabel = cell.textLabel {
                 let textLabelFrame = textLabel.bounds
