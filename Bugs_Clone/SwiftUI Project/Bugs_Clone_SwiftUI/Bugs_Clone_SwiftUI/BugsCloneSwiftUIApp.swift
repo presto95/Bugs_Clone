@@ -21,6 +21,7 @@ struct BugsCloneSwiftUIApp: App {
             NavigationView {
                 let viewModel = MusicPlayerViewModel()
                 MusicPlayerView(viewModel: viewModel)
+                    .navigationBarHidden(true)
             }
             .accentColor(.primary)
         }

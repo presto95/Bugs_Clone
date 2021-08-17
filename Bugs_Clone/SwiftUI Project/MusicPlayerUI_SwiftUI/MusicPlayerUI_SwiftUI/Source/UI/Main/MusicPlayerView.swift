@@ -18,12 +18,29 @@ public struct MusicPlayerView: View {
     }
 
     public var body: some View {
-        VStack {
-            topView
-                .frame(height: UIScreen.main.bounds.width)
+        ZStack(alignment: .center) {
+            Image("")
+                .resizable()
+                .background(Color.green)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            bottomView
+            VStack(alignment: .center, spacing: .zero) {
+                topView
+                    .frame(maxWidth: .infinity)
+                    .frame(height: {
+                        switch displayingInfo {
+                        case .albumCover:
+                            return UIScreen.main.bounds.width
+                        case .lyric:
+                            return UIScreen.main.bounds.height * 0.62
+                        }
+                    }())
+
+                bottomView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
+        .ignoresSafeArea(.all, edges: .all)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MusicPlayerUI_SwiftUI
 import WalkmanContentsProvider
 
 @main

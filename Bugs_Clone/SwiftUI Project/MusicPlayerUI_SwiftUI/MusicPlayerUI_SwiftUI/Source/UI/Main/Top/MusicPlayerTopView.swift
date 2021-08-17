@@ -24,7 +24,6 @@ struct MusicPlayerTopView: View {
                 lyricsView
             }
         }
-        .animation(.easeInOut)
         .onTapGesture {
             viewModel.setNextDisplayingInfo()
         }
@@ -35,11 +34,13 @@ private extension MusicPlayerTopView {
     @ViewBuilder var albumCoverView: some View {
         let viewModel = MusicPlayerAlbumCoverViewModel()
         MusicPlayerAlbumCoverView(viewModel: viewModel)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     @ViewBuilder var lyricsView: some View {
         let viewModel = MusicPlayerLyricsViewModel()
         MusicPlayerLyricsView(viewModel: viewModel)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

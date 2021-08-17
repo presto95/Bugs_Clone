@@ -18,15 +18,23 @@ struct MusicPlayerBottomView: View {
     var body: some View {
         VStack(alignment: .center, spacing: .zero) {
             seekbar
+                .frame(height: 8)
 
             timeView
                 .padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
 
-            songInfoView
+            VStack(alignment: .center, spacing: .zero) {
+                songInfoView
+                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
 
-            musicControlView
+                musicControlView
+                    .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+//                    .frame(height: UIScreen.main.bounds.width / 10)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
