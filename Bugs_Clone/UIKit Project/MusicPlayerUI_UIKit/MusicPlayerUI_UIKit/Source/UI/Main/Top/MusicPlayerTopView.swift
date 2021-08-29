@@ -11,8 +11,8 @@ import MusicPlayerCommon
 import Common
 
 final class MusicPlayerTopView: UIView {
-    private var albumCoverView: MusicPlayerAlbumCoverView!
-    private(set) var lyricsView: MusicPlayerLyricsView!
+    private lazy var albumCoverView = MusicPlayerAlbumCoverView(viewModel: viewModel.albumCoverViewModel)
+    private(set) lazy var lyricsView = MusicPlayerLyricsView(viewModel: viewModel.lyricsViewModel)
 
     private var musicPlayerRootUIInteractor: MusicPlayerRootUIInteractable? {
         return DIContainer.shared.resolve(MusicPlayerRootUIInteractable.self)

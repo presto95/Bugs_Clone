@@ -13,8 +13,8 @@ import Walkman
 import Common
 
 public final class MusicPlayerViewController: UIViewController {
-    private var topView: MusicPlayerTopView!
-    private var bottomView: MusicPlayerBottomView!
+    private lazy var topView = MusicPlayerTopView(viewModel: viewModel.topViewModel)
+    private lazy var bottomView = MusicPlayerBottomView(viewModel: viewModel.bottomViewModel)
     private lazy var backgroundImageView = UIImageView()
     private lazy var backgroundImageBlurView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
 
@@ -50,10 +50,7 @@ public final class MusicPlayerViewController: UIViewController {
 private extension MusicPlayerViewController {
     func configureViews() {
         view.backgroundColor = .white
-
-        topView = MusicPlayerTopView(viewModel: viewModel.topViewModel)
-        bottomView = MusicPlayerBottomView(viewModel: viewModel.bottomViewModel)
-
+        
         backgroundImageView.do {
             $0.contentMode = .scaleAspectFill
         }

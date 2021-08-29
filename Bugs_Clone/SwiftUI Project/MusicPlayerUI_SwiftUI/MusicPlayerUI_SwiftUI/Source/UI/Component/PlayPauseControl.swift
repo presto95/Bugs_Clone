@@ -15,11 +15,11 @@ struct PlayPauseControl: View, MusicControlComponentProtocol {
     }
 
     private var action: () -> Void
-    @State private var mode: PlayPauseMode = .pause
+    @Binding private var mode: PlayPauseMode
 
-    init(action: @escaping () -> Void, initialMode: PlayPauseMode = .pause) {
+    init(action: @escaping () -> Void, mode: Binding<PlayPauseMode>) {
         self.action = action
-        self.mode = initialMode
+        self._mode = mode
     }
 
     var body: some View {
@@ -59,6 +59,6 @@ struct PlayPauseControl: View, MusicControlComponentProtocol {
 
 struct PlayPauseControl_Previews: PreviewProvider {
     static var previews: some View {
-        PlayPauseControl(action: {})
+        PlayPauseControl(action: {}, mode: .constant(.pause))
     }
 }

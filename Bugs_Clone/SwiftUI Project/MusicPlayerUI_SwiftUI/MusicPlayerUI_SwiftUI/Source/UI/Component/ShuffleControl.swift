@@ -15,11 +15,11 @@ struct ShuffleControl: View, MusicControlComponentProtocol {
     }
 
     private var action: () -> Void
-    @State private var mode: ShuffleMode = .off
+    @Binding private var mode: ShuffleMode
 
-    init(action: @escaping () -> Void, initialMode: ShuffleMode = .off) {
+    init(action: @escaping () -> Void, mode: Binding<ShuffleMode>) {
         self.action = action
-        self.mode = initialMode
+        self._mode = mode
     }
 
     var body: some View {
@@ -58,6 +58,6 @@ struct ShuffleControl: View, MusicControlComponentProtocol {
 
 struct ShuffleControl_Previews: PreviewProvider {
     static var previews: some View {
-        ShuffleControl(action: {})
+        ShuffleControl(action: {}, mode: .constant(.off))
     }
 }

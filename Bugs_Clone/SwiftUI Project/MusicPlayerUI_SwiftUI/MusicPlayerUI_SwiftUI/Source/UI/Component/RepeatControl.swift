@@ -15,11 +15,11 @@ struct RepeatControl: View, MusicControlComponentProtocol {
     }
 
     private var action: () -> Void
-    @State private var mode: RepeatMode = .off
+    @Binding private(set) var mode: RepeatMode
 
-    init(action: @escaping () -> Void, initialMode: RepeatMode = .off) {
+    init(action: @escaping () -> Void, mode: Binding<RepeatMode>) {
         self.action = action
-        self.mode = initialMode
+        self._mode = mode
     }
 
     var body: some View {
@@ -59,6 +59,6 @@ struct RepeatControl: View, MusicControlComponentProtocol {
 
 struct RepeatControl_Previews: PreviewProvider {
     static var previews: some View {
-        RepeatControl(action: {})
+        RepeatControl(action: {}, mode: .constant(.off))
     }
 }

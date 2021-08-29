@@ -6,19 +6,30 @@
 //
 
 import SwiftUI
+import MusicPlayerCommon
 
 struct MusicControlView: View {
+    @Binding private var repeatMode: RepeatMode
+    @Binding private var playPauseMode: PlayPauseMode
+    @Binding private var shuffleMode: ShuffleMode
+
     private var repeatControlAction: (() -> Void)?
     private var precedentControlAction: (() -> Void)?
     private var playPauseControlAction: (() -> Void)?
     private var subsequentControlAction: (() -> Void)?
     private var shuffleControlAction: (() -> Void)?
 
+    init(repeatMode: Binding<RepeatMode>, playPauseMode: Binding<PlayPauseMode>, shuffleMode: Binding<ShuffleMode>) {
+        _repeatMode = repeatMode
+        _playPauseMode = playPauseMode
+        _shuffleMode = shuffleMode
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: .zero) {
             RepeatControl(action: {
                 repeatControlAction?()
-            })
+            }, mode: $repeatMode)
 
             Spacer()
 
@@ -30,7 +41,7 @@ struct MusicControlView: View {
 
             PlayPauseControl(action: {
                 playPauseControlAction?()
-            })
+            }, mode: $playPauseMode)
 
             Spacer()
 
@@ -42,7 +53,7 @@ struct MusicControlView: View {
 
             ShuffleControl(action: {
                 shuffleControlAction?()
-            })
+            }, mode: $shuffleMode)
         }
         .frame(maxWidth: .infinity)
     }
@@ -82,6 +93,6 @@ extension MusicControlView {
 
 struct MusicControlView_Previews: PreviewProvider {
     static var previews: some View {
-        MusicControlView()
+        MusicControlView(repeatMode: .constant(.off), playPauseMode: .constant(.pause), shuffleMode: .constant(.off))
     }
 }

@@ -12,10 +12,13 @@ import Common
 
 public struct MusicPlayerView: View {
     @ObservedObject private var viewModel: MusicPlayerViewModel
-    @State private var displayingInfo: DisplayingInfo = .albumCover
+    @ObservedObject private var topViewModel: MusicPlayerTopViewModel
+    @ObservedObject private var bottomViewModel: MusicPlayerBottomViewModel
 
     public init(viewModel: MusicPlayerViewModel) {
         self.viewModel = viewModel
+        self.topViewModel = viewModel.topViewModel
+        self.bottomViewModel = viewModel.bottomViewModel
 
 //        DIContainer.shared.register(self, as: <#T##Dependency.Type#>)
     }
@@ -28,16 +31,13 @@ public struct MusicPlayerView: View {
                 topView
                     .frame(maxWidth: .infinity)
                     .frame(height: {
-                        switch displayingInfo {
+                        switch topViewModel.displayingInfo {
                         case .albumCover:
                             return UIScreen.main.bounds.width
                         case .lyric:
                             return UIScreen.main.bounds.height * 0.62
                         }
                     }())
-                    .onTapGesture {
-//                        <#code#>
-                    }
 
                 bottomView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)

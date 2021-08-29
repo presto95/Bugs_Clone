@@ -29,7 +29,7 @@ public extension UserDefaults {
 
 public extension UserDefaults {
     enum Key {
-        static let lastRepeatMode = "lastRepeatMode"
-        static let lastShuffleMode = "lastShuffleMode"
+        public static let lastRepeatMode = "lastRepeatMode"
+        public static let lastShuffleMode = "lastShuffleMode"
     }
 }

@@ -9,7 +9,11 @@ import SwiftUI
 import MusicPlayerCommon
 
 struct MusicPlayerBottomView: View {
+    @AppStorage(UserDefaults.Key.lastRepeatMode) var lastRepeatMode: String?
+    @AppStorage(UserDefaults.Key.lastShuffleMode) var lastShuffleMode: String?
     @ObservedObject private var viewModel: MusicPlayerBottomViewModel
+
+    @State private var playPauseMode: PlayPauseMode = .pause
 
     init(viewModel: MusicPlayerBottomViewModel) {
         self.viewModel = viewModel
@@ -29,7 +33,7 @@ struct MusicPlayerBottomView: View {
 
                 musicControlView
                     .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
-//                    .frame(height: UIScreen.main.bounds.width / 10)
+                //                    .frame(height: UIScreen.main.bounds.width / 10)
             }
             .fixedSize(horizontal: false, vertical: true)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -39,11 +43,11 @@ struct MusicPlayerBottomView: View {
 }
 
 private extension MusicPlayerBottomView {
-    var seekbar: some View {
+    @ViewBuilder var seekbar: some View {
         Seekbar(currentTime: viewModel.currentTimeInSeconds ?? 0, endTime: viewModel.endTimeInSeconds ?? 0)
     }
 
-    var timeView: some View {
+    @ViewBuilder var timeView: some View {
         HStack {
             Text(viewModel.currentTime ?? "")
                 .foregroundColor(.primary)
@@ -57,7 +61,7 @@ private extension MusicPlayerBottomView {
         }
     }
 
-    var songInfoView: some View {
+    @ViewBuilder var songInfoView: some View {
         VStack(alignment: .center, spacing: .zero) {
             Text(viewModel.title ?? "")
                 .foregroundColor(.primary)
@@ -75,25 +79,37 @@ private extension MusicPlayerBottomView {
         }
     }
 
-    var musicControlView: some View {
-        MusicControlView()
-            .repeatControlAction {
+    @ViewBuilder var musicControlView: some View {
+        MusicControlView(repeatMode: Binding(get: {
+            RepeatMode(rawValue: self.lastRepeatMode ?? "") ?? .off
+        }, set: { value in
+            self.lastRepeatMode = value.rawValue
+        }),
+        playPauseMode: $playPauseMode,
+        shuffleMode: Binding(get: {
+            ShuffleMode(rawValue: self.lastShuffleMode ?? "") ?? .off
+        }, set: { value in
+            self.lastShuffleMode = value.rawValue
+        }))
+        .repeatControlAction {
 
-            }
-            .precedentControlAction {
+        }
+        .precedentControlAction {
 
-            }
-            .playPauseControlAction {
+        }
+        .playPauseControlAction {
 
-            }
-            .subsequentControlAction {
+        }
+        .subsequentControlAction {
 
-            }
-            .shuffleControlAction {
+        }
+        .shuffleControlAction {
 
-            }
+        }
     }
 }
+
+// MARK: - Preview
 
 struct MusicPlayerBottomView_Previews: PreviewProvider {
     static var previews: some View {
