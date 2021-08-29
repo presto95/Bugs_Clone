@@ -43,16 +43,12 @@ private extension MusicPlayerTopView {
         tapGestureRecognizer.delegate = self
         addGestureRecognizer(tapGestureRecognizer)
 
-        let albumCoverViewModel = MusicPlayerAlbumCoverViewModel()
-        albumCoverView = MusicPlayerAlbumCoverView(viewModel: albumCoverViewModel)
-        viewModel.albumCoverViewModel = albumCoverViewModel
+        albumCoverView = MusicPlayerAlbumCoverView(viewModel: viewModel.albumCoverViewModel)
         albumCoverView.do {
             $0.alpha = 1
         }
 
-        let lyricsViewModel = MusicPlayerLyricsViewModel()
-        lyricsView = MusicPlayerLyricsView(viewModel: lyricsViewModel)
-        viewModel.lyricsViewModel = lyricsViewModel
+        lyricsView = MusicPlayerLyricsView(viewModel: viewModel.lyricsViewModel)
         lyricsView.do {
             $0.alpha = 0
         }

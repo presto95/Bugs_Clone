@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import Combine
 import MusicPlayerCommon
 
-struct ShuffleControl: View {
+struct ShuffleControl: View, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> {
+        fatalError("Use `action` in initializer instead.")
+    }
+
     private var action: () -> Void
     @State private var mode: ShuffleMode = .off
 
@@ -33,6 +38,21 @@ struct ShuffleControl: View {
                 return 1
             }
         }())
+    }
+
+    // MARK: MusicControlComponentProtocol
+
+    func setNextMode(animated: Bool) {
+        switch mode {
+        case .off:
+            self.mode = .on
+        case .on:
+            self.mode = .off
+        }
+
+        if animated {
+            
+        }
     }
 }
 

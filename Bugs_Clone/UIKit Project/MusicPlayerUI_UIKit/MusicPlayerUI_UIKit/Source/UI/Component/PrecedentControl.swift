@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import Combine
+import MusicPlayerCommon
 
-final class PrecedentControl: UIControl {
-    @Published private(set) var tap: Void?
+final class PrecedentControl: UIControl, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> { tapSubject.eraseToAnyPublisher() }
 
     private lazy var imageView = UIImageView()
+
+    private var tapSubject = CurrentValueSubject<Void?, Never>(nil)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,11 +25,9 @@ final class PrecedentControl: UIControl {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-// MARK: - MusicControl
+    // MARK: MusicControlComponentProtocol
 
-extension PrecedentControl: MusicControl {
     func setNextMode(animated: Bool) {
         if animated {
             runScaleAnimation(to: imageView)
@@ -65,6 +67,6 @@ private extension PrecedentControl {
     }
 
     @objc func viewDidTap(_ sender: UIControl) {
-        tap = ()
+        tapSubject.send(()) 
     }
 }

@@ -12,8 +12,8 @@ public final class MusicPlayerTopViewModel: ObservableObject {
 
     private let displayingInfoSubject = CurrentValueSubject<DisplayingInfo, Never>(.albumCover)
 
-    public var albumCoverViewModel: MusicPlayerAlbumCoverViewModel?
-    public var lyricsViewModel: MusicPlayerLyricsViewModel?
+    public private(set) var albumCoverViewModel = MusicPlayerAlbumCoverViewModel()
+    public private(set) var lyricsViewModel = MusicPlayerLyricsViewModel()
 
     private var cancellables = Set<AnyCancellable>()
 

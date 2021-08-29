@@ -10,11 +10,6 @@ import Combine
 import MusicPlayerCommon
 import Common
 
-protocol LyricsViewProtocol: AnyObject {
-    func selectLyricItem(before time: TimeInterval)
-    func unselectLyricItem()
-}
-
 final class MusicPlayerLyricsView: UIView {
     private lazy var tableView = UITableView(frame: .zero, style: .plain)
 
@@ -52,9 +47,9 @@ extension MusicPlayerLyricsView {
     }
 }
 
-// MARK: - LyricsViewProtocol
+// MARK: - LyricsController
 
-extension MusicPlayerLyricsView: LyricsViewProtocol {
+extension MusicPlayerLyricsView: LyricsController {
     func selectLyricItem(before time: TimeInterval) {
         guard let index = viewModel.lyrics?.index(before: time),
               tableView.indexPathForSelectedRow?.row != index else { return }

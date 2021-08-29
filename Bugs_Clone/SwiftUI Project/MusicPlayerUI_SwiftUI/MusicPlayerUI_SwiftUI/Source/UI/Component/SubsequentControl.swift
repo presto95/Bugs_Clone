@@ -6,8 +6,14 @@
 //
 
 import SwiftUI
+import Combine
+import MusicPlayerCommon
 
-struct SubsequentControl: View {
+struct SubsequentControl: View, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> {
+        fatalError("Use `action` in initializer instead.")
+    }
+
     private var action: () -> Void
 
     init(action: @escaping () -> Void) {
@@ -22,6 +28,14 @@ struct SubsequentControl: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
         })
+    }
+
+    // MARK: MusicControlComponentProtocol
+
+    func setNextMode(animated: Bool) {
+        if animated {
+
+        }
     }
 }
 

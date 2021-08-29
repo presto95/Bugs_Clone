@@ -6,11 +6,15 @@
 //
 
 import UIKit
+import Combine
+import MusicPlayerCommon
 
-final class SubsequentControl: UIControl {
-    @Published private(set) var tap: Void?
+final class SubsequentControl: UIControl, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> { tapSubject.eraseToAnyPublisher() }
 
     private lazy var imageView = UIImageView()
+
+    private var tapSubject = CurrentValueSubject<Void?, Never>(nil)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -21,11 +25,9 @@ final class SubsequentControl: UIControl {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-// MARK: - MusicControl
+    // MARK: MusicControlComponentProtocol
 
-extension SubsequentControl: MusicControl {
     func setNextMode(animated: Bool) {
         if animated {
             runScaleAnimation(to: imageView)
@@ -52,19 +54,7 @@ private extension SubsequentControl {
         }
     }
 
-    func runScaleAnimation() {
-        UIView.animate(withDuration: 0.1,
-                       delay: 0,
-                       options: [.autoreverse, .curveEaseInOut],
-                       animations: {
-                        self.imageView.transform = self.imageView.transform.scaledBy(x: 0.8, y: 0.8)
-                       },
-                       completion: { _ in
-                        self.imageView.transform = .identity
-                       })
-    }
-
     @objc func viewDidTap(_ sender: UIControl) {
-        tap = ()
+        tapSubject.send(()) 
     }
 }

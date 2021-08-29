@@ -5,8 +5,6 @@
 //  Created by Presto on 2021/08/08.
 //
 
-import MusicPlayerCommon
-
-protocol MusicPlayerRootUIInteractable: AnyObject {
+public protocol MusicPlayerRootUIInteractable {
     func adjustRootViews(by displayingInfo: DisplayingInfo)
 }

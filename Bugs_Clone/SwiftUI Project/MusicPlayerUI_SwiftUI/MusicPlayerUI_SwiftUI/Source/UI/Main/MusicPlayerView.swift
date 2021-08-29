@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 import MusicPlayerCommon
+import Common
 
 public struct MusicPlayerView: View {
     @ObservedObject private var viewModel: MusicPlayerViewModel
@@ -15,14 +16,13 @@ public struct MusicPlayerView: View {
 
     public init(viewModel: MusicPlayerViewModel) {
         self.viewModel = viewModel
+
+//        DIContainer.shared.register(self, as: <#T##Dependency.Type#>)
     }
 
     public var body: some View {
         ZStack(alignment: .center) {
-            Image("")
-                .resizable()
-                .background(Color.green)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            backgroundView
 
             VStack(alignment: .center, spacing: .zero) {
                 topView
@@ -35,6 +35,9 @@ public struct MusicPlayerView: View {
                             return UIScreen.main.bounds.height * 0.62
                         }
                     }())
+                    .onTapGesture {
+//                        <#code#>
+                    }
 
                 bottomView
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -46,14 +49,19 @@ public struct MusicPlayerView: View {
 }
 
 private extension MusicPlayerView {
+    @ViewBuilder var backgroundView: some View {
+        Image("")
+            .resizable()
+            .background(Color.green)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
     @ViewBuilder var topView: some View {
-        let viewModel = MusicPlayerTopViewModel()
-        MusicPlayerTopView(viewModel: viewModel)
+        MusicPlayerTopView(viewModel: viewModel.topViewModel)
     }
 
     @ViewBuilder var bottomView: some View {
-        let viewModel = MusicPlayerBottomViewModel()
-        MusicPlayerBottomView(viewModel: viewModel)
+        MusicPlayerBottomView(viewModel: viewModel.bottomViewModel)
     }
 }
 

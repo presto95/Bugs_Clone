@@ -7,17 +7,15 @@
 
 import UIKit
 import Combine
+import MusicPlayerCommon
 
-protocol SeekbarProtocol: AnyObject {
-    var currentTime: TimeInterval { get set }
-    var endTime: TimeInterval { get set }
-}
-
-final class Seekbar: UIView, SeekbarProtocol {
-    @Published private(set) var updatedTimeWithSeeking: TimeInterval = 0
+final class Seekbar: UIView, SeekingController {
+    var updatedTimeWithSeeking: AnyPublisher<TimeInterval, Never> { updatedTimeWithSeekingSubject.eraseToAnyPublisher() }
 
     private lazy var entireTimeBar = UIView()
     private lazy var currentTimeBar = UIView()
+
+    private var updatedTimeWithSeekingSubject = CurrentValueSubject<TimeInterval, Never>(0)
 
     var currentTime: TimeInterval {
         get {
@@ -100,6 +98,16 @@ final class Seekbar: UIView, SeekbarProtocol {
 
     override var intrinsicContentSize: CGSize {
         return CGSize(width: Const.width, height: trackingStatusHeight)
+    }
+
+    // MARK: SeekingController
+
+    func setCurrentTime(_ currentTime: TimeInterval) {
+        self.currentTime = currentTime
+    }
+
+    func setEndTime(_ endTime: TimeInterval) {
+        self.endTime = endTime
     }
 }
 
@@ -243,7 +251,7 @@ private extension Seekbar {
                     return progress * endTime / TimeInterval(Const.width)
                 }
             }()
-            updatedTimeWithSeeking = updatingTime
+            updatedTimeWithSeekingSubject.send(updatingTime)
         default:
             break
         }

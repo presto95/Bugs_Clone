@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import Combine
 import MusicPlayerCommon
 
-struct PlayPauseControl: View {
+struct PlayPauseControl: View, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> {
+        fatalError("Use `action` in initializer instead.")
+    }
+
     private var action: () -> Void
     @State private var mode: PlayPauseMode = .pause
 
@@ -32,6 +37,21 @@ struct PlayPauseControl: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
         })
+    }
+
+    // MARK: MusicControlComponentProtocol
+
+    func setNextMode(animated: Bool) {
+        switch mode {
+        case .play:
+            self.mode = .pause
+        case .pause:
+            self.mode = .play
+        }
+
+        if animated {
+
+        }
     }
 }
 

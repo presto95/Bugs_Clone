@@ -6,12 +6,14 @@
 //
 
 import UIKit
+import Combine
 import MusicPlayerCommon
 import Common
 
-final class ShuffleControl: UIControl {
-    @Published private(set) var tap: Void?
-    @Published var mode: ShuffleMode = .off {
+final class ShuffleControl: UIControl, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> { tapSubject.eraseToAnyPublisher() }
+
+    private(set) var mode: ShuffleMode = .off {
         didSet {
             UserDefaults.standard.lastShuffleMode = mode
             setNeedsLayout()
@@ -19,6 +21,8 @@ final class ShuffleControl: UIControl {
     }
 
     private lazy var imageView = UIImageView()
+
+    private var tapSubject = CurrentValueSubject<Void?, Never>(nil)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -34,11 +38,9 @@ final class ShuffleControl: UIControl {
         super.layoutSubviews()
         updateViews()
     }
-}
 
-// MARK: - MusicControl
+    // MARK: MusicControlComponentProtocol
 
-extension ShuffleControl: MusicControl {
     func setNextMode(animated: Bool) {
         switch mode {
         case .off:
@@ -77,7 +79,7 @@ private extension ShuffleControl {
     }
 
     @objc func viewDidTap(_ sender: UIControl) {
-        tap = ()
+        tapSubject.send(())
     }
 }
 

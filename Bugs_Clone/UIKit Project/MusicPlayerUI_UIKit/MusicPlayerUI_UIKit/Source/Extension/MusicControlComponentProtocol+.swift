@@ -1,17 +1,14 @@
 //
-//  MusicControl.swift
+//  MusicControlComponentProtocol+.swift
 //  MusicPlayerUI_UIKit
 //
-//  Created by Presto on 2021/07/04.
+//  Created by Presto on 2021/08/22.
 //
 
 import UIKit
+import MusicPlayerCommon
 
-protocol MusicControl {
-    func setNextMode(animated: Bool)
-}
-
-extension MusicControl {
+extension MusicControlComponentProtocol {
     func runScaleAnimation(to view: UIView) {
         UIView.animate(withDuration: 0.1,
                        delay: 0,

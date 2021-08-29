@@ -6,18 +6,21 @@
 //
 
 import UIKit
-import MusicPlayerCommon
 import Combine
+import MusicPlayerCommon
 
-final class PlayPauseControl: UIControl {
-    @Published private(set) var tap: Void?
-    @Published var mode: PlayPauseMode = .pause {
+final class PlayPauseControl: UIControl, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> { tapSubject.eraseToAnyPublisher() }
+
+    private(set) var mode: PlayPauseMode = .pause {
         didSet {
             setNeedsLayout()
         }
     }
 
     private lazy var imageView = UIImageView()
+
+    private var tapSubject = CurrentValueSubject<Void?, Never>(nil)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,11 +36,9 @@ final class PlayPauseControl: UIControl {
         super.layoutSubviews()
         updateViews()
     }
-}
 
-// MARK: - MusicControl
+    // MARK: MusicControlComponentProtocol
 
-extension PlayPauseControl: MusicControl {
     func setNextMode(animated: Bool) {
         switch mode {
         case .play:
@@ -88,7 +89,7 @@ private extension PlayPauseControl {
     }
 
     @objc func viewDidTap(_ sender: UIControl) {
-        tap = ()
+        tapSubject.send(())
     }
 }
 

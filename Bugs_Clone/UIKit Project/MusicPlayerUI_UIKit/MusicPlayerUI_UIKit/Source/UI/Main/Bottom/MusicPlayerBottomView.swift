@@ -123,21 +123,21 @@ private extension MusicPlayerBottomView {
     }
 
     func bindSubviews() {
-        seekbar.$updatedTimeWithSeeking
+        seekbar.updatedTimeWithSeeking
             .sink { [weak self] currentTime in
                 self?.musicInteractor?.updateMusicCurrentTime(currentTime)
                 self?.musicInteractor?.updateCurrentTime(currentTime)
             }
             .store(in: &cancellables)
 
-        musicControlView.repeatControl.$tap
+        musicControlView.repeatControl.tap
             .compactMap { $0 }
             .sink { [weak self] _ in
                 self?.musicControlView.repeatControl.setNextMode(animated: true)
             }
             .store(in: &cancellables)
 
-        musicControlView.precedentControl.$tap
+        musicControlView.precedentControl.tap
             .compactMap { $0 }
             .sink { [weak self] _ in
                 self?.musicControlView.precedentControl.setNextMode(animated: true)
@@ -145,7 +145,7 @@ private extension MusicPlayerBottomView {
             .store(in: &cancellables)
 
         musicControlView.playPauseControl.do {
-            $0.$tap
+            $0.tap
                 .compactMap { $0 }
                 .sink { [weak self] _ in
                     let mode = self?.musicControlView.playPauseControl.mode
@@ -171,14 +171,14 @@ private extension MusicPlayerBottomView {
                 .store(in: &cancellables)
         }
 
-        musicControlView.subsequentControl.$tap
+        musicControlView.subsequentControl.tap
             .compactMap { $0 }
             .sink { [weak self] _ in
                 self?.musicControlView.subsequentControl.setNextMode(animated: true)
             }
             .store(in: &cancellables)
 
-        musicControlView.shuffleControl.$tap
+        musicControlView.shuffleControl.tap
             .compactMap { $0 }
             .sink { [weak self] _ in
                 self?.musicControlView.shuffleControl.setNextMode(animated: true)

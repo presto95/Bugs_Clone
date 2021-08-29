@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import Combine
 import MusicPlayerCommon
 
-struct RepeatControl: View {
+struct RepeatControl: View, MusicControlComponentProtocol {
+    var tap: AnyPublisher<Void?, Never> {
+        fatalError("Use `action` in initializer instead.")
+    }
+
     private var action: () -> Void
     @State private var mode: RepeatMode = .off
 
@@ -33,6 +38,8 @@ struct RepeatControl: View {
             .aspectRatio(contentMode: .fit)
         })
     }
+
+    // MARK: MusicControlComponentProtocol
 
     func setNextMode(animated: Bool) {
         switch mode {

@@ -9,9 +9,13 @@ import AVFoundation
 import Combine
 
 public final class Walkman: NSObject {
-    @Published public private(set) var didFinishPlaying: Bool?
-    @Published public private(set) var decodeErrorDidOccur: Error?
-    @Published public private(set) var currentTimeDidUpdate: TimeInterval?
+    public var didFinishPlaying: AnyPublisher<Bool?, Never> { didFinishPlayingSubject.eraseToAnyPublisher() }
+    public var decodeErrorDidOccur: AnyPublisher<Error?, Never> { decodeErrorDidOccurSubject.eraseToAnyPublisher() }
+    public var currentTimeDidUpdate: AnyPublisher<TimeInterval?, Never> { currentTimeDidUpdateSubject.eraseToAnyPublisher()}
+
+    private var didFinishPlayingSubject = CurrentValueSubject<Bool?, Never>(nil)
+    private var decodeErrorDidOccurSubject = CurrentValueSubject<Error?, Never>(nil)
+    private var currentTimeDidUpdateSubject = CurrentValueSubject<TimeInterval?, Never>(nil)
 
     private var player: AVAudioPlayer
     private var timer: Timer?
@@ -103,7 +107,7 @@ extension Walkman {
 
 private extension Walkman {
     @objc func timerDidTick(_ timer: Timer) {
-        currentTimeDidUpdate = currentTime
+        currentTimeDidUpdateSubject.send(currentTime)
     }
 
     func makeTimer() -> Timer {
@@ -133,11 +137,11 @@ extension Walkman: AVAudioPlayerDelegate {
     public func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         rewind()
 
-        didFinishPlaying = flag
+        didFinishPlayingSubject.send(flag)
     }
 
     public func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         guard let error = error else { return }
-        decodeErrorDidOccur = WalkmanError.decodeFailed(derived: error)
+        decodeErrorDidOccurSubject.send(WalkmanError.decodeFailed(derived: error))
     }
 }

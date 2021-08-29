@@ -14,27 +14,27 @@ import Common
 public final class MusicPlayerViewModel: ObservableObject {
     @Published private(set) var albumCoverImageData: Data?
     @Published private(set) var musicData: Data?
-
-    private(set) var musicPlayer: MusicPlayerProtocol?
-
-    var topViewModel: MusicPlayerTopViewModel?
-    var bottomViewModel: MusicPlayerBottomViewModel?
-
+    
+    private(set) var musicPlayer: MusicPlayerController?
+    
+    private(set) var topViewModel = MusicPlayerTopViewModel()
+    private(set) var bottomViewModel = MusicPlayerBottomViewModel()
+    
     private let albumCoverImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let musicDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let musicRequestResultSubject = CurrentValueSubject<Result<Music, Error>?, Never>(nil)
-
+    
     private var cancellables = Set<AnyCancellable>()
-
+    
     public init() {
         albumCoverImageDataSubject
             .assign(to: \.albumCoverImageData, on: self)
             .store(in: &cancellables)
-
+        
         musicDataSubject
             .assign(to: \.musicData, on: self)
             .store(in: &cancellables)
-
+        
         musicDataSubject
             .compactMap { $0 }
             .tryMap { try Walkman(data: $0) }
@@ -47,16 +47,16 @@ public final class MusicPlayerViewModel: ObservableObject {
                 }
             }, receiveValue: { [weak self] musicPlayer in
                 self?.musicPlayer = musicPlayer
-
-
+                
+                
             })
             .store(in: &cancellables)
-
+        
         let sharedMusicRequestResult = musicRequestResultSubject
             .tryCompactMap { try $0?.get() }
             .receive(on: DispatchQueue.main)
             .share()
-
+        
         sharedMusicRequestResult
             .map(\.image)
             .receive(on: DispatchQueue.global(qos: .utility))
@@ -71,10 +71,10 @@ public final class MusicPlayerViewModel: ObservableObject {
                 }
             }, receiveValue: { [weak self] imageData in
                 self?.albumCoverImageDataSubject.send(imageData)
-                self?.topViewModel?.albumCoverViewModel?.setAlbumCoverImageData(imageData)
+                self?.topViewModel.albumCoverViewModel.setAlbumCoverImageData(imageData)
             })
             .store(in: &cancellables)
-
+        
         sharedMusicRequestResult
             .map(\.file)
             .receive(on: DispatchQueue.global(qos: .utility))
@@ -92,7 +92,7 @@ public final class MusicPlayerViewModel: ObservableObject {
                 self?.musicDataSubject.send(musicData)
             })
             .store(in: &cancellables)
-
+        
         sharedMusicRequestResult
             .sink(receiveCompletion: { completion in
                 switch completion {
@@ -102,15 +102,15 @@ public final class MusicPlayerViewModel: ObservableObject {
                     break
                 }
             }, receiveValue: { [weak self] data in
-                self?.topViewModel?.lyricsViewModel?.setLyricRawString(data.lyrics)
-                self?.bottomViewModel?.setSongInfo(title: data.title,
-                                                   album: data.album,
-                                                   artist: data.singer,
-                                                   endTime: TimeInterval(data.duration))
+                self?.topViewModel.lyricsViewModel.setLyricRawString(data.lyrics)
+                self?.bottomViewModel.setSongInfo(title: data.title,
+                                                  album: data.album,
+                                                  artist: data.singer,
+                                                  endTime: TimeInterval(data.duration))
             })
             .store(in: &cancellables)
     }
-
+    
     func requestMusic() {
         API.musicPublisher()
             .sink(receiveCompletion: { [weak self] completion in
@@ -128,26 +128,26 @@ public final class MusicPlayerViewModel: ObservableObject {
 }
 
 private extension MusicPlayerViewModel {
-    func bindMusicPlayer(_ musicPlayer: MusicPlayerProtocol) {
-        musicPlayer.currentTimeDidUpdatePublisher
+    func bindMusicPlayer(_ musicPlayer: MusicPlayerController) {
+        musicPlayer.currentTimeDidUpdate
             .compactMap { $0 }
             .sink { [weak self] currentTime in
-//                self?.musicInteractor?.updateCurrentTime(currentTime)
+                //                self?.musicInteractor?.updateCurrentTime(currentTime)
             }
             .store(in: &cancellables)
-
-        musicPlayer.didFinishPlayingPublisher
+        
+        musicPlayer.didFinishPlaying
             .compactMap { $0 }
             .filter { $0 }
             .sink { [weak self] _ in
-//                self?.musicInteractor?.reset()
+                //                self?.musicInteractor?.reset()
             }
             .store(in: &cancellables)
-
-        musicPlayer.decodeErrorDidOccurPublisher
+        
+        musicPlayer.decodeErrorDidOccur
             .compactMap { $0 }
             .sink { [weak self] error in
-//                self?.navigationInteractor?.presentAlert(withMessage: error.localizedDescription)
+                //                self?.navigationInteractor?.presentAlert(withMessage: error.localizedDescription)
             }
             .store(in: &cancellables)
     }

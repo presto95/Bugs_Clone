@@ -51,13 +51,8 @@ private extension MusicPlayerViewController {
     func configureViews() {
         view.backgroundColor = .white
 
-        let topViewModel = MusicPlayerTopViewModel()
-        viewModel.topViewModel = topViewModel
-        topView = MusicPlayerTopView(viewModel: topViewModel)
-
-        let bottomViewModel = MusicPlayerBottomViewModel()
-        viewModel.bottomViewModel = bottomViewModel
-        bottomView = MusicPlayerBottomView(viewModel: bottomViewModel)
+        topView = MusicPlayerTopView(viewModel: viewModel.topViewModel)
+        bottomView = MusicPlayerBottomView(viewModel: viewModel.bottomViewModel)
 
         backgroundImageView.do {
             $0.contentMode = .scaleAspectFill
@@ -111,46 +106,46 @@ private extension MusicPlayerViewController {
 // MARK: - MusicInteractable
 
 extension MusicPlayerViewController: MusicInteractable {
-    var musicPlayer: MusicPlayerProtocol? {
+    public var musicPlayerController: MusicPlayerController? {
         return viewModel.musicPlayer
     }
 
-    var seekbar: SeekbarProtocol? {
+    public var seekingController: SeekingController? {
         return bottomView.seekbar
     }
 
-    var lyricsView: LyricsViewProtocol? {
+    public var lyricsController: LyricsController? {
         return topView.lyricsView
     }
 
-    var musicControlView: MusicControlView? {
+    public var musicControlController: MusicControlController? {
         return bottomView.musicControlView
     }
 
-    func updateCurrentTime(_ currentTime: TimeInterval) {
+    public func updateCurrentTime(_ currentTime: TimeInterval) {
         bottomView.updateCurrentTime(currentTime)
-        seekbar?.currentTime = currentTime
-        lyricsView?.selectLyricItem(before: currentTime)
+        seekingController?.setCurrentTime(currentTime)
+        lyricsController?.selectLyricItem(before: currentTime)
     }
 
-    func updateEndTime(_ endTime: TimeInterval) {
-        seekbar?.endTime = endTime
+    public func updateEndTime(_ endTime: TimeInterval) {
+        seekingController?.setEndTime(endTime)
     }
 
-    func updateMusicCurrentTime(_ currentTime: TimeInterval) {
-        musicPlayer?.currentTime = currentTime
+    public func updateMusicCurrentTime(_ currentTime: TimeInterval) {
+        musicPlayerController?.setCurrentTime(currentTime)
     }
 
-    func reset() {
-        try? musicPlayer?.stop()
-        seekbar?.currentTime = 0
+    public func reset() {
+        try? musicPlayerController?.stop()
+        seekingController?.setCurrentTime(0)
         bottomView.updateCurrentTime(0)
-        musicControlView?.playPauseControl.setNextMode(animated: false)
-        lyricsView?.unselectLyricItem()
+        musicControlController?.setPlayPauseControlNextMode(animated: false)
+        lyricsController?.unselectLyricItem()
     }
 
-    func playMusic() throws {
-        guard let musicPlayer = musicPlayer else { return }
+    public func playMusic() throws {
+        guard let musicPlayer = musicPlayerController else { return }
         do {
             try musicPlayer.play()
         } catch {
@@ -158,8 +153,8 @@ extension MusicPlayerViewController: MusicInteractable {
         }
     }
 
-    func pauseMusic() throws {
-        guard let musicPlayer = musicPlayer else { return }
+    public func pauseMusic() throws {
+        guard let musicPlayer = musicPlayerController else { return }
         do {
             try musicPlayer.pause()
         } catch {
@@ -171,7 +166,7 @@ extension MusicPlayerViewController: MusicInteractable {
 // MARK: - NavigationDelegate
 
 extension MusicPlayerViewController: NavigationInteractable {
-    func presentAlert(withMessage message: String?) {
+    public func presentAlert(withMessage message: String?) {
         UIAlertController
             .alert(title: "", message: message)
             .action(title: "OK", style: .default)
@@ -182,12 +177,13 @@ extension MusicPlayerViewController: NavigationInteractable {
 // MARK: - MusicPlayerRootUIDelegate
 
 extension MusicPlayerViewController: MusicPlayerRootUIInteractable {
-    func adjustRootViews(by displayingInfo: DisplayingInfo) {
+    public func adjustRootViews(by displayingInfo: DisplayingInfo) {
         switch displayingInfo {
         case .albumCover:
             topView.snp.updateConstraints { make in
                 make.height.equalTo(UIScreen.main.bounds.width)
             }
+
             UIView.animate(withDuration: 0.2,
                            delay: 0,
                            options: .curveEaseInOut,

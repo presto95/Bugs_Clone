@@ -5,13 +5,11 @@
 //  Created by Presto on 2021/08/08.
 //
 
-import MusicPlayerCommon
-
-protocol MusicInteractable: AnyObject {
-    var musicPlayer: MusicPlayerProtocol? { get }
-    var seekbar: SeekbarProtocol? { get }
-    var lyricsView: LyricsViewProtocol? { get }
-    var musicControlView: MusicControlView? { get }
+public protocol MusicInteractable {
+    var musicPlayerController: MusicPlayerController? { get }
+    var seekingController: SeekingController? { get }
+    var lyricsController: LyricsController? { get }
+    var musicControlController: MusicControlController? { get }
 
     func updateCurrentTime(_ currentTime: TimeInterval)
     func updateEndTime(_ endTime: TimeInterval)
