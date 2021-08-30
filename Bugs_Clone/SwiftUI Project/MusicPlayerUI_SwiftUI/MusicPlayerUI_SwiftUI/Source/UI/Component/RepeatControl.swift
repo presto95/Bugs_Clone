@@ -15,11 +15,15 @@ struct RepeatControl: View, MusicControlComponentProtocol {
     }
 
     private var action: () -> Void
-    @Binding private(set) var mode: RepeatMode
+    @Binding private var modeChangeTrigger: Void?
+    private var onModeChanged: ((RepeatMode) -> Void)?
 
-    init(action: @escaping () -> Void, mode: Binding<RepeatMode>) {
+    @State private var mode: RepeatMode
+
+    init(action: @escaping () -> Void, modeChangeTrigger: Binding<Void?>, initialMode: RepeatMode = .off) {
         self.action = action
-        self._mode = mode
+        self._modeChangeTrigger = modeChangeTrigger
+        self.mode = initialMode
     }
 
     var body: some View {
@@ -37,6 +41,46 @@ struct RepeatControl: View, MusicControlComponentProtocol {
             .resizable()
             .aspectRatio(contentMode: .fit)
         })
+        .onReceive(Just(modeChangeTrigger)) { output in
+            guard output != nil else { return }
+            
+            switch mode {
+            case .off:
+                mode = .one
+            case .one:
+                mode = .off
+            }
+
+            onModeChanged?(mode)
+        }
+    }
+
+    @discardableResult
+    func action(_ action: @escaping () -> Void) -> Self {
+        var `self` = self
+        self.action = action
+        return self
+
+    }
+
+    @discardableResult
+    func modeChangeTrigger(_ trigger: Binding<Void?>) -> Self {
+        var `self` = self
+        self._modeChangeTrigger = trigger
+        return self
+    }
+
+    @discardableResult
+    func initialMode(_ initialMode: RepeatMode) -> Self {
+        self.mode = initialMode
+        return self
+    }
+
+    @discardableResult
+    func onModeChanged(_ action: @escaping (RepeatMode) -> Void) -> Self {
+        var `self` = self
+        self.onModeChanged = action
+        return self
     }
 
     // MARK: MusicControlComponentProtocol
@@ -48,10 +92,6 @@ struct RepeatControl: View, MusicControlComponentProtocol {
         case .one:
             self.mode = .off
         }
-
-        if animated {
-
-        }
     }
 }
 
@@ -59,6 +99,7 @@ struct RepeatControl: View, MusicControlComponentProtocol {
 
 struct RepeatControl_Previews: PreviewProvider {
     static var previews: some View {
-        RepeatControl(action: {}, mode: .constant(.off))
+        RepeatControl(action: {}, modeChangeTrigger: .constant(nil))
+            .frame(width: 50, height: 50)
     }
 }

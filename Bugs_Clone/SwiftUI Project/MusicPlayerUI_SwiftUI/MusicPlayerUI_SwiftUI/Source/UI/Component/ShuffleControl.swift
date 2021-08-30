@@ -15,11 +15,15 @@ struct ShuffleControl: View, MusicControlComponentProtocol {
     }
 
     private var action: () -> Void
-    @Binding private var mode: ShuffleMode
+    @Binding private var modeChangeTrigger: Void?
+    private var onModeChanged: ((ShuffleMode) -> Void)?
 
-    init(action: @escaping () -> Void, mode: Binding<ShuffleMode>) {
+    @State private var mode: ShuffleMode
+
+    init(action: @escaping () -> Void, modeChangeTrigger: Binding<Void?>, initialMode: ShuffleMode = .off) {
         self.action = action
-        self._mode = mode
+        self._modeChangeTrigger = modeChangeTrigger
+        self.mode = initialMode
     }
 
     var body: some View {
@@ -38,6 +42,45 @@ struct ShuffleControl: View, MusicControlComponentProtocol {
                 return 1
             }
         }())
+        .onReceive(Just(modeChangeTrigger)) { output in
+            guard output != nil else { return }
+
+            switch mode {
+            case .off:
+                mode = .on
+            case .on:
+                mode = .off
+            }
+
+            onModeChanged?(mode)
+        }
+    }
+
+    @discardableResult
+    func action(_ action: @escaping () -> Void) -> Self {
+        var `self` = self
+        self.action = action
+        return self
+    }
+
+    @discardableResult
+    func modeChangeTrigger(_ trigger: Binding<Void?>) -> Self {
+        var `self` = self
+        self._modeChangeTrigger = trigger
+        return self
+    }
+
+    @discardableResult
+    func initialMode(_ initialMode: ShuffleMode) -> Self {
+        self.mode = initialMode
+        return self
+    }
+
+    @discardableResult
+    func onModeChanged(_ action: @escaping (ShuffleMode) -> Void) -> Self {
+        var `self` = self
+        self.onModeChanged = onModeChanged
+        return self
     }
 
     // MARK: MusicControlComponentProtocol
@@ -58,6 +101,7 @@ struct ShuffleControl: View, MusicControlComponentProtocol {
 
 struct ShuffleControl_Previews: PreviewProvider {
     static var previews: some View {
-        ShuffleControl(action: {}, mode: .constant(.off))
+        ShuffleControl(action: {}, modeChangeTrigger: .constant(nil))
+            .frame(width: 50, height: 50)
     }
 }

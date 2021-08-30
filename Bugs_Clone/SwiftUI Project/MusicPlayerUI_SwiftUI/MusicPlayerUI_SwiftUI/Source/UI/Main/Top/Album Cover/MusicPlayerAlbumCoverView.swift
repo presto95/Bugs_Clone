@@ -16,13 +16,18 @@ struct MusicPlayerAlbumCoverView: View {
     }
 
     var body: some View {
-        if let albumCoverImageData = viewModel.albumCoverImageData,
-           let uiImage = UIImage(data: albumCoverImageData) {
-            Image(uiImage: uiImage)
-        } else {
-            ProgressView()
-                .progressViewStyle(CircularProgressViewStyle())
+        Group {
+            if let albumCoverImageData = viewModel.albumCoverImageData,
+               let uiImage = UIImage(data: albumCoverImageData) {
+                Image(uiImage: uiImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+            }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

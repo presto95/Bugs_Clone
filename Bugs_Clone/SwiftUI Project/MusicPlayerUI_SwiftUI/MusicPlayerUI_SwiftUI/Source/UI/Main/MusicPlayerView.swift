@@ -50,10 +50,16 @@ public struct MusicPlayerView: View {
 
 private extension MusicPlayerView {
     @ViewBuilder var backgroundView: some View {
-        Image("")
-            .resizable()
-            .background(Color.green)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        if let albumCoverImageData = viewModel.albumCoverImageData,
+           let uiImage = UIImage(data: albumCoverImageData) {
+            Image(uiImage: uiImage)
+                .resizable()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            ProgressView()
+                .progressViewStyle(CircularProgressViewStyle())
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
     }
 
     @ViewBuilder var topView: some View {

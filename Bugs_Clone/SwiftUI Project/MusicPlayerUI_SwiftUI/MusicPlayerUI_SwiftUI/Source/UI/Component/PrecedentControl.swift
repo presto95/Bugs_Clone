@@ -30,6 +30,13 @@ struct PrecedentControl: View, MusicControlComponentProtocol {
         })
     }
 
+    @discardableResult
+    func action(_ action: @escaping () -> Void) -> Self {
+        var `self` = self
+        self.action = action
+        return self
+    }
+
     // MARK: MusicControlComponentProtocol
 
     func setNextMode(animated: Bool) {

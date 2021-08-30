@@ -30,6 +30,13 @@ struct SubsequentControl: View, MusicControlComponentProtocol {
         })
     }
 
+    @discardableResult
+    func action(_ action: @escaping () -> Void) -> Self {
+        var `self` = self
+        self.action = action
+        return self
+    }
+
     // MARK: MusicControlComponentProtocol
 
     func setNextMode(animated: Bool) {
@@ -44,5 +51,6 @@ struct SubsequentControl: View, MusicControlComponentProtocol {
 struct SubsequentControl_Previews: PreviewProvider {
     static var previews: some View {
         SubsequentControl(action: {})
+            .frame(width: 50, height: 50)
     }
 }

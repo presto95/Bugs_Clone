@@ -10,9 +10,13 @@ import MusicPlayerCommon
 
 struct MusicPlayerTopView: View {
     @ObservedObject private var viewModel: MusicPlayerTopViewModel
+    @ObservedObject private var albumCoverViewModel: MusicPlayerAlbumCoverViewModel
+    @ObservedObject private var lyricsViewModel: MusicPlayerLyricsViewModel
 
     init(viewModel: MusicPlayerTopViewModel) {
         self.viewModel = viewModel
+        self.albumCoverViewModel = viewModel.albumCoverViewModel
+        self.lyricsViewModel = viewModel.lyricsViewModel
     }
 
     var body: some View {
@@ -33,13 +37,11 @@ struct MusicPlayerTopView: View {
 
 private extension MusicPlayerTopView {
     @ViewBuilder var albumCoverView: some View {
-        let viewModel = MusicPlayerAlbumCoverViewModel()
-        MusicPlayerAlbumCoverView(viewModel: viewModel)
+        MusicPlayerAlbumCoverView(viewModel: viewModel.albumCoverViewModel)
     }
 
     @ViewBuilder var lyricsView: some View {
-        let viewModel = MusicPlayerLyricsViewModel()
-        MusicPlayerLyricsView(viewModel: viewModel)
+        MusicPlayerLyricsView(viewModel: viewModel.lyricsViewModel)
     }
 }
 

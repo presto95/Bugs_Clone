@@ -9,19 +9,31 @@ import SwiftUI
 
 struct Seekbar: View {
     @State private var isTracking: Bool = false
-    @State private var currentTime: TimeInterval = .zero
-    @State private var endTime: TimeInterval = .zero
+    @Binding private var currentTime: TimeInterval?
+    @Binding private var endTime: TimeInterval?
 
     private var timeUpdatedWithSeekingAction: ((TimeInterval) -> Void)?
 
-    init(currentTime: TimeInterval, endTime: TimeInterval) {
-        self.currentTime = currentTime
-        self.endTime = endTime
+    init(currentTime: Binding<TimeInterval?>, endTime: Binding<TimeInterval?>) {
+        self._currentTime = currentTime
+        self._endTime = endTime
     }
 
     var body: some View {
-        entireTimeBar
-            .overlay(currentTimeBar, alignment: .leading)
+        GeometryReader { proxy in
+            ZStack(alignment: .leading) {
+                entireTimeBar(geometryProxy: proxy)
+
+                currentTimeBar(geometryProxy: proxy)
+                        .frame(width: {
+                            if timeRatio == .zero {
+                                return 0
+                            } else {
+                                return proxy.size.width * CGFloat(timeRatio)
+                            }
+                        }())
+            }
+        }
     }
 }
 
@@ -34,44 +46,75 @@ extension Seekbar {
 }
 
 private extension Seekbar {
-    var entireTimeBar: some View {
+    func entireTimeBar(geometryProxy: GeometryProxy) -> some View {
         Rectangle()
             .foregroundColor(.gray)
-            .gesture(TapGesture().onEnded {
-
-            })
-            .gesture(DragGesture().onChanged { state in
-
-            })
-            .gesture(LongPressGesture(minimumDuration: 0.1).onChanged { flag in
-
-            })
+            .gesture(tapGesture(geometryProxy: geometryProxy))
+            .gesture(dragGesture(geometryProxy: geometryProxy))
+            .gesture(longPressGesture(geometryProxy: geometryProxy))
     }
 
-    var currentTimeBar: some View {
+    func currentTimeBar(geometryProxy: GeometryProxy) -> some View {
         Rectangle()
             .foregroundColor(.black)
-            .gesture(TapGesture().onEnded {
-
-            })
-            .gesture(DragGesture().onChanged { state in
-
-            })
-            .gesture(LongPressGesture(minimumDuration: 0.1).onChanged { flag in
-
-            })
+            .gesture(tapGesture(geometryProxy: geometryProxy))
+            .gesture(dragGesture(geometryProxy: geometryProxy))
+            .gesture(longPressGesture(geometryProxy: geometryProxy))
     }
 }
 
 private extension Seekbar {
-//    func updateCurrentTimeBar
+    func tapGesture(geometryProxy: GeometryProxy) -> some Gesture {
+        TapGesture()
+            .onEnded {
+                isTracking = false
+            }
+    }
+
+    func dragGesture(geometryProxy: GeometryProxy) -> some Gesture {
+        DragGesture()
+            .onChanged { value in
+                isTracking = true
+
+                let location = value.location
+                currentTime = {
+                    if let endTime = endTime, endTime != .zero {
+                        return Double(location.x / geometryProxy.size.width) * endTime
+                    } else {
+                        return 0
+                    }
+                }()
+            }
+            .onEnded { value in
+                isTracking = false
+            }
+    }
+
+    func longPressGesture(geometryProxy: GeometryProxy) -> some Gesture {
+        LongPressGesture(minimumDuration: 0.1)
+            .onChanged { value in
+                isTracking = true
+            }
+            .onEnded { value in
+                isTracking = false
+            }
+    }
+
+    var timeRatio: Double {
+        if let endTime = endTime, endTime != .zero {
+            let currentTime = currentTime ?? .zero
+            return currentTime / endTime
+        } else {
+            return 0
+        }
+    }
 }
 
 // MARK: - Preview
 
 struct Seekbar_Previews: PreviewProvider {
     static var previews: some View {
-        Seekbar(currentTime: 50, endTime: 100)
+        Seekbar(currentTime: .constant(10), endTime: .constant(12))
             .frame(width: UIScreen.main.bounds.width, height: 8)
     }
 }

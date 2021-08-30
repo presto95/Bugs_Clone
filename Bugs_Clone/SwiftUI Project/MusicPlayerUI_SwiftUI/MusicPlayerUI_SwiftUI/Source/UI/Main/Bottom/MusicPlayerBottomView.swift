@@ -44,7 +44,7 @@ struct MusicPlayerBottomView: View {
 
 private extension MusicPlayerBottomView {
     @ViewBuilder var seekbar: some View {
-        Seekbar(currentTime: viewModel.currentTimeInSeconds ?? 0, endTime: viewModel.endTimeInSeconds ?? 0)
+        Seekbar(currentTime: $viewModel.currentTimeInSeconds, endTime: $viewModel.endTimeInSeconds)
     }
 
     @ViewBuilder var timeView: some View {
@@ -80,32 +80,53 @@ private extension MusicPlayerBottomView {
     }
 
     @ViewBuilder var musicControlView: some View {
-        MusicControlView(repeatMode: Binding(get: {
-            RepeatMode(rawValue: self.lastRepeatMode ?? "") ?? .off
-        }, set: { value in
-            self.lastRepeatMode = value.rawValue
-        }),
-        playPauseMode: $playPauseMode,
-        shuffleMode: Binding(get: {
-            ShuffleMode(rawValue: self.lastShuffleMode ?? "") ?? .off
-        }, set: { value in
-            self.lastShuffleMode = value.rawValue
-        }))
-        .repeatControlAction {
+        MusicControlView()
+            .repeatControlConfiguration { repeatControl in
+                repeatControl
+                    .action {
 
-        }
-        .precedentControlAction {
+                    }
+                    .modeChangeTrigger(.constant(nil))
+                    .initialMode(RepeatMode(rawValue: self.lastRepeatMode ?? "") ?? .off)
+                    .onModeChanged { repeatMode in
 
-        }
-        .playPauseControlAction {
+                    }
 
-        }
-        .subsequentControlAction {
+            }
+            .precedentControlConfiguration { precedentControl in
+                precedentControl
+                    .action {
 
-        }
-        .shuffleControlAction {
+                    }
+            }
+            .playPauseControlConfiguration { playPauseControl in
+                playPauseControl
+                    .action {
 
-        }
+                    }
+                    .modeChangeTrigger(.constant(nil))
+                    .initialMode(.pause)
+                    .onModeChanged { playPauseMode in
+
+                    }
+            }
+            .subsequentControlConfiguration { subsequentControl in
+                subsequentControl
+                    .action {
+
+                    }
+            }
+            .shuffleControlConfiguration { shuffleControl in
+                shuffleControl
+                    .action {
+
+                    }
+                    .modeChangeTrigger(.constant(nil))
+                    .initialMode(ShuffleMode(rawValue: self.lastShuffleMode ?? "") ?? .off)
+                    .onModeChanged { shuffleMode in
+                        
+                    }
+            }
     }
 }
 

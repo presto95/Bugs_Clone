@@ -16,14 +16,17 @@ struct MusicPlayerLyricsView: View {
     }
 
     var body: some View {
-        if let lyrics = viewModel.lyrics {
-            List(0 ..< lyrics.count) { index in
-                let lyric = lyrics.lyric(at: index)
-                Text(lyric ?? "")
+        Group {
+            if let lyrics = viewModel.lyrics {
+                List(0 ..< lyrics.count) { index in
+                    let lyric = lyrics.lyric(at: index)
+                    Text(lyric ?? "")
+                }
+            } else {
+                Text("No Lyrics")
             }
-        } else {
-            Text("No Lyrics")
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

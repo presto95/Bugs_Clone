@@ -15,11 +15,15 @@ struct PlayPauseControl: View, MusicControlComponentProtocol {
     }
 
     private var action: () -> Void
-    @Binding private var mode: PlayPauseMode
+    @Binding private var modeChangeTrigger: Void?
+    private var onModeChanged: ((PlayPauseMode) -> Void)?
 
-    init(action: @escaping () -> Void, mode: Binding<PlayPauseMode>) {
+    @State private var mode: PlayPauseMode
+
+    init(action: @escaping () -> Void, modeChangeTrigger: Binding<Void?>, initialMode: PlayPauseMode = .pause) {
         self.action = action
-        self._mode = mode
+        self._modeChangeTrigger = modeChangeTrigger
+        self.mode = initialMode
     }
 
     var body: some View {
@@ -37,6 +41,45 @@ struct PlayPauseControl: View, MusicControlComponentProtocol {
             .resizable()
             .aspectRatio(contentMode: .fit)
         })
+        .onReceive(Just(modeChangeTrigger)) { output in
+            guard output != nil else { return }
+
+            switch mode {
+            case .pause:
+                mode = .play
+            case .play:
+                mode = .pause
+            }
+
+            onModeChanged?(mode)
+        }
+    }
+
+    @discardableResult
+    func action(_ action: @escaping () -> Void) -> Self {
+        var `self` = self
+        self.action = action
+        return self
+    }
+
+    @discardableResult
+    func modeChangeTrigger(_ trigger: Binding<Void?>) -> Self {
+        var `self` = self
+        self._modeChangeTrigger = trigger
+        return self
+    }
+
+    @discardableResult
+    func initialMode(_ initialMode: PlayPauseMode) -> Self {
+        self.mode = initialMode
+        return self
+    }
+
+    @discardableResult
+    func onModeChanged(_ action: @escaping (PlayPauseMode) -> Void) -> Self {
+        var `self` = self
+        self.onModeChanged = onModeChanged
+        return self
     }
 
     // MARK: MusicControlComponentProtocol
@@ -59,6 +102,7 @@ struct PlayPauseControl: View, MusicControlComponentProtocol {
 
 struct PlayPauseControl_Previews: PreviewProvider {
     static var previews: some View {
-        PlayPauseControl(action: {}, mode: .constant(.pause))
+        PlayPauseControl(action: {}, modeChangeTrigger: .constant(nil))
+            .frame(width: 50, height: 50)
     }
 }

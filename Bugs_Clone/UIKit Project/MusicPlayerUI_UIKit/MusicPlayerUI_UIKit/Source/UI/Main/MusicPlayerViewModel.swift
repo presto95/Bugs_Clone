@@ -17,8 +17,8 @@ public final class MusicPlayerViewModel: ObservableObject {
 
     private(set) var musicPlayer: MusicPlayerController?
 
-    private(set) var topViewModel = MusicPlayerTopViewModel()
-    private(set) var bottomViewModel = MusicPlayerBottomViewModel()
+    private(set) var topViewModel: MusicPlayerTopViewModel
+    private(set) var bottomViewModel: MusicPlayerBottomViewModel
 
     private let albumCoverImageDataSubject = CurrentValueSubject<Data?, Never>(nil)
     private let musicDataSubject = CurrentValueSubject<Data?, Never>(nil)
@@ -34,7 +34,11 @@ public final class MusicPlayerViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
 
-    public init() {
+    public init(topViewModel: MusicPlayerTopViewModel = MusicPlayerTopViewModel(),
+                bottomViewModel: MusicPlayerBottomViewModel = MusicPlayerBottomViewModel()) {
+        self.topViewModel = topViewModel
+        self.bottomViewModel = bottomViewModel
+
         albumCoverImageDataSubject
             .assign(to: \.albumCoverImageData, on: self)
             .store(in: &cancellables)

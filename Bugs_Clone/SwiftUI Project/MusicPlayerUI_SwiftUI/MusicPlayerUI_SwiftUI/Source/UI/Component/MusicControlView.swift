@@ -9,90 +9,87 @@ import SwiftUI
 import MusicPlayerCommon
 
 struct MusicControlView: View {
-    @Binding private var repeatMode: RepeatMode
-    @Binding private var playPauseMode: PlayPauseMode
-    @Binding private var shuffleMode: ShuffleMode
-
-    private var repeatControlAction: (() -> Void)?
-    private var precedentControlAction: (() -> Void)?
-    private var playPauseControlAction: (() -> Void)?
-    private var subsequentControlAction: (() -> Void)?
-    private var shuffleControlAction: (() -> Void)?
-
-    init(repeatMode: Binding<RepeatMode>, playPauseMode: Binding<PlayPauseMode>, shuffleMode: Binding<ShuffleMode>) {
-        _repeatMode = repeatMode
-        _playPauseMode = playPauseMode
-        _shuffleMode = shuffleMode
-    }
-
     var body: some View {
         HStack(alignment: .center, spacing: .zero) {
-            RepeatControl(action: {
-                repeatControlAction?()
-            }, mode: $repeatMode)
+            repeatControl
 
             Spacer()
 
-            PrecedentControl(action: {
-                precedentControlAction?()
-            })
+            precedentControl
 
             Spacer()
 
-            PlayPauseControl(action: {
-                playPauseControlAction?()
-            }, mode: $playPauseMode)
+            playPauseControl
 
             Spacer()
 
-            SubsequentControl(action: {
-                subsequentControlAction?()
-            })
+            subsequentControl
 
             Spacer()
 
-            ShuffleControl(action: {
-                shuffleControlAction?()
-            }, mode: $shuffleMode)
+            shuffleControl
         }
         .frame(maxWidth: .infinity)
     }
 }
 
 extension MusicControlView {
-    func repeatControlAction(_ action: @escaping () -> Void) -> Self {
-        var `self` = self
-        self.repeatControlAction = action
+    func repeatControlConfiguration(_ configuration: (RepeatControl) -> Void) -> Self {
+        guard let repeatControl = repeatControl as? RepeatControl else { return self }
+        configuration(repeatControl)
         return self
     }
 
-    func precedentControlAction(_ action: @escaping () -> Void) -> Self {
-        var `self` = self
-        self.precedentControlAction = action
+    func precedentControlConfiguration(_ configuration: (PrecedentControl) -> Void) -> Self {
+        guard let precedentControl = precedentControl as? PrecedentControl else { return self }
+        configuration(precedentControl)
         return self
     }
 
-    func playPauseControlAction(_ action: @escaping () -> Void) -> Self {
-        var `self` = self
-        self.playPauseControlAction = action
+    func playPauseControlConfiguration(_ configuration: (PlayPauseControl) -> Void) -> Self {
+        guard let playPauseControl = playPauseControl as? PlayPauseControl else { return self }
+        configuration(playPauseControl)
         return self
     }
 
-    func subsequentControlAction(_ action: @escaping () -> Void) -> Self {
-        var `self` = self
-        self.subsequentControlAction = action
+    func subsequentControlConfiguration(_ configuration: (SubsequentControl) -> Void) -> Self {
+        guard let subsequentControl = subsequentControl as? SubsequentControl else { return self }
+        configuration(subsequentControl)
         return self
     }
 
-    func shuffleControlAction(_ action: @escaping () -> Void) -> Self {
-        var `self` = self
-        self.shuffleControlAction = action
+    func shuffleControlConfiguration(_ configuration: (ShuffleControl) -> Void) -> Self {
+        guard let shuffleControl = shuffleControl as? ShuffleControl else { return self }
+        configuration(shuffleControl)
         return self
+    }
+}
+
+private extension MusicControlView {
+    var repeatControl: some View {
+        RepeatControl(action: {}, modeChangeTrigger: .constant(nil))
+    }
+
+    var precedentControl: some View {
+        PrecedentControl(action: {})
+    }
+
+    var playPauseControl: some View {
+        PlayPauseControl(action: {}, modeChangeTrigger: .constant(nil))
+    }
+
+    var subsequentControl: some View {
+        SubsequentControl(action: {})
+    }
+
+    var shuffleControl: some View {
+        ShuffleControl(action: {}, modeChangeTrigger: .constant(nil))
     }
 }
 
 struct MusicControlView_Previews: PreviewProvider {
     static var previews: some View {
-        MusicControlView(repeatMode: .constant(.off), playPauseMode: .constant(.pause), shuffleMode: .constant(.off))
+        MusicControlView()
+            .frame(maxWidth: .infinity, maxHeight: 50)
     }
 }

@@ -12,9 +12,9 @@ public final class MusicPlayerBottomViewModel: ObservableObject {
     @Published public private(set) var title: String?
     @Published public private(set) var album: String?
     @Published public private(set) var artist: String?
-    @Published public private(set) var currentTimeInSeconds: TimeInterval?
+    @Published public var currentTimeInSeconds: TimeInterval?
     @Published public private(set) var currentTime: String?
-    @Published public private(set) var endTimeInSeconds: TimeInterval?
+    @Published public var endTimeInSeconds: TimeInterval?
     @Published public private(set) var endTime: String?
 
     private let titleSubject = CurrentValueSubject<String?, Never>(nil)

@@ -12,12 +12,16 @@ public final class MusicPlayerTopViewModel: ObservableObject {
 
     private let displayingInfoSubject = CurrentValueSubject<DisplayingInfo, Never>(.albumCover)
 
-    public private(set) var albumCoverViewModel = MusicPlayerAlbumCoverViewModel()
-    public private(set) var lyricsViewModel = MusicPlayerLyricsViewModel()
+    public private(set) var albumCoverViewModel: MusicPlayerAlbumCoverViewModel
+    public private(set) var lyricsViewModel: MusicPlayerLyricsViewModel
 
     private var cancellables = Set<AnyCancellable>()
 
-    public init() {
+    public init(albumCoverViewModel: MusicPlayerAlbumCoverViewModel = MusicPlayerAlbumCoverViewModel(),
+                lyricsViewModel: MusicPlayerLyricsViewModel = MusicPlayerLyricsViewModel()) {
+        self.albumCoverViewModel = albumCoverViewModel
+        self.lyricsViewModel = lyricsViewModel
+
         displayingInfoSubject
             .removeDuplicates()
             .assign(to: \.displayingInfo, on: self)
